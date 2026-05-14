@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'screens/job_feed_screen.dart';
+import 'screens/register_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class KidmeApp extends StatelessWidget {
       title: 'Kidme',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const JobFeedScreen(),
+      home: const RegisterScreen(),
     );
   }
 }
