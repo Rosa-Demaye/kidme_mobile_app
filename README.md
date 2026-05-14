@@ -1,80 +1,95 @@
-# Kidme Mobile App
+# 🚀 Kidme Mobile App
+**Connecting Talent with Opportunity in Chad.**
 
-Kidme is a Flutter mobile app for job seekers and recruiters in Chad. It helps candidates build a trusted, ONAPE-ready profile and helps companies, NGOs, and institutions publish opportunities, review applicants, and manage recruitment workflows.
+Kidme is a premium Flutter mobile application designed to bridge the gap between job seekers and recruiters in Chad. By integrating deeply with the existing Supabase ecosystem and focusing on local recruitment standards (ONAPE), Kidme provides a seamless, trusted, and efficient recruitment workflow for candidates, NGOs, and corporations alike.
 
-## Product Direction
+---
 
-The first mobile release should stay focused and excellent:
+## ✨ Project Vision
+The mission of Kidme is to modernize the Chadian labor market by providing a mobile-first experience that prioritizes verified profiles, clear communication, and professional design.
 
-- Candidate onboarding with email/password authentication.
-- Job discovery by category, city, organization type, and remote availability.
-- Candidate profile with identity, education, documents, profile photo, and cover letter.
-- Job application flow with status tracking.
-- Recruiter-facing preview for applicants, shortlists, and offer statistics.
-- Notifications for job alerts, messages, and application updates.
+### 🌟 Key Features
+*   **Verified Profiles:** Candidates build "ONAPE-ready" digital identities with document verification (CVs, Diplomas, National ID).
+*   **Smart Discovery:** Search for opportunities by category, city, organization type, and remote availability.
+*   **Recruitment Dashboard:** A dedicated space for recruiters to manage shortlists, review applications, and track hiring statistics.
+*   **Real-time Alerts:** Push notifications for job matches, application status updates, and direct messaging.
+*   **Secure Storage:** Fully encrypted storage for sensitive documents using Supabase Storage.
 
-Advanced social features such as public comments, likes, candidate-to-candidate chat, videos, and broad recruiter analytics should be phased in after the core hiring workflow is stable.
+---
 
-## Backend Recommendation
+## 🛠 Tech Stack
+*   **Frontend:** [Flutter](https://flutter.dev/) (Cross-platform performance & Beautiful UI)
+*   **Backend:** [Supabase](https://supabase.com/)
+    *   **Auth:** Shared cross-platform user accounts.
+    *   **Database:** PostgreSQL with Row Level Security (RLS) for data integrity.
+    *   **Storage:** Secure bucket for profile media and PDFs.
+    *   **Functions:** Edge Functions for server-side logic and audit logs.
 
-Because the existing web app uses Supabase, the mobile app should use Supabase first for the shared production data layer:
+---
 
-- Supabase Auth for shared user accounts.
-- Postgres tables for jobs, organizations, subscriptions, profiles, applications, and audits.
-- Supabase Storage for CVs, diplomas, national ID PDFs, criminal records, profile photos, and profile media.
-- Row Level Security policies for Super Admin, Admin, Recruiter, and Candidate permissions.
-- Supabase Edge Functions for privileged actions, audit logs, and notification triggers.
+## 🎨 Design Philosophy
+Inspired by leaders like **Apple**, **Stripe**, and **Linear**, Kidme follows a "Professional-Clean" aesthetic:
+- **Primary Navy:** `#0A2540` — *Trust & Authority*
+- **Professional Blue:** `#2563EB` — *Innovation*
+- **Gold Accent:** `#F4B400` — *Excellence*
+- **Visuals:** Soft cards, subtle shadows, rounded controls, and fluid motion.
 
-Avoid mixing Firebase Firestore and Supabase for the same core data at the start. It adds synchronization, duplicate security rules, and data ownership complexity. Firebase can still be added later only for a narrow reason, such as FCM push notifications, if Supabase push/edge workflows do not cover the mobile needs.
+---
 
-## Roles
-
-- Super Admin: owns the platform, creates admin accounts, manages global rules, billing, contracts, account deletion, and audit visibility.
-- Organization Admin: represents a company, NGO, or institution. Manages its jobs, candidates, applicant statistics, and limited post edits.
-- Candidate: creates a profile, uploads required documents, applies to jobs, tracks application status, and communicates with recruiters.
-
-## Design System
-
-Kidme should feel premium, modern, clear, and trustworthy. The current prototype uses:
-
-- Primary Navy: `#0A2540`
-- Professional Blue: `#2563EB`
-- Soft White: `#F8FAFC`
-- Gold Accent: `#F4B400`
-- Professional Dark Text: `#1E293B`
-- Soft Grey: `#94A3B8`
-
-The visual direction is inspired by Apple, Linear, Stripe, LinkedIn, and high-quality recruitment dashboards: soft cards, strong typography, rounded controls, subtle shadows, clear status indicators, and calm motion.
-
-## Development
-
-```bash
-flutter pub get
-flutter run
+## 📂 Project Structure
+Kidme uses a feature-first architecture for high scalability and maintainability:
+```text
+lib/
+├── core/           # Constants, global helpers, routing
+├── features/       # Modular features (Auth, Jobs, Profile, etc.)
+├── theme/          # App-wide styles and design system
+├── widgets/        # Reusable UI components
+└── main.dart       # App entry point & initialization
 ```
 
-Run checks before opening a pull request:
+---
 
+## 🏁 Getting Started
+
+### Prerequisites
+- Flutter SDK (latest stable)
+- Supabase Project URL & Anon Key
+
+### Installation
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the application:
+   ```bash
+   flutter run
+   ```
+
+### Quality Control
+Before opening a pull request, please run:
 ```bash
 dart format lib test
 flutter analyze
 flutter test
 ```
 
-## Suggested Architecture
+---
 
-```text
-lib/
-  core/              shared constants, routing, helpers
-  features/
-    auth/
-    jobs/
-    profile/
-    applications/
-    recruiter/
-    notifications/
-  theme/             colors and app theme
-  widgets/           shared UI components
-```
+## 👥 Roles & Governance
+- **Super Admin:** Platform governance, billing, and global audit logs.
+- **Organization Admin:** Talent acquisition management for companies and NGOs.
+- **Candidate:** Profile management and job application lifecycle.
 
-The current repository contains a first UI prototype and design foundation. The next technical step is to connect it to the same Supabase project as the web app.
+---
+
+## 🗺 Roadmap
+- [x] UI Prototype & Design Foundation
+- [x] Supabase Integration (Auth & DB)
+- [ ] Document Upload & Profile Verification
+- [ ] Real-time Chat & Notifications
+- [ ] Recruiter Analytics Dashboard
+
+---
+
+*Developed with ❤️ for the Chadian professional ecosystem.*

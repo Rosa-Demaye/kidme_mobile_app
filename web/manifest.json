@@ -5,7 +5,7 @@
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "Kidme is a mobile app developed for job seekers and recruiters in Chad, built with Flutter and Firebase",
+    "description": "Kidme is a mobile app developed for job seekers and recruiters in Chad, built with Flutter and Supabase",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
