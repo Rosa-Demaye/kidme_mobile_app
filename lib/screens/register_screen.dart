@@ -7,6 +7,10 @@ import '../widgets/kidme_logo.dart';
 import 'job_feed_screen.dart';
 import 'login_screen.dart';
 
+/// The [RegisterScreen] allows users to create a new account in the Kidme ecosystem.
+///
+/// It features a dual-role selection (Candidate vs Employer) and captures essential
+/// user details required for initial onboarding.
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -15,6 +19,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  /// index 0 = Candidate, index 1 = Employer.
   int _selectedRole = 0;
 
   @override
@@ -24,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
           children: [
+            // Top branding row with Logo and Navigation to Sign In.
             Row(
               children: [
                 const KidmeLogo(),
@@ -39,8 +45,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ],
             ),
             const SizedBox(height: 18),
+            // High-impact visual introduction.
             _RegisterHero(selectedRole: _selectedRole),
             const SizedBox(height: 18),
+            // Main Registration Form Card.
             KidmeCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,6 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Start with secure account details, then complete the ONAPE-ready profile.',
                   ),
                   const SizedBox(height: 16),
+                  // Toggle between Candidate and Employer roles.
                   _RoleSelector(
                     selectedRole: _selectedRole,
                     onChanged: (value) => setState(() => _selectedRole = value),
@@ -80,6 +89,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     icon: Icons.badge_outlined,
                   ),
                   const SizedBox(height: 18),
+                  // Primary action button.
                   KidmeButton(
                     label: 'Create account',
                     icon: Icons.verified_user_outlined,
@@ -93,6 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
             const SizedBox(height: 18),
+            // Helper card indicating required documents.
             const _DocumentReadinessCard(),
           ],
         ),
@@ -101,6 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 }
 
+/// Visual header section with a gradient background and brand messaging.
 class _RegisterHero extends StatelessWidget {
   const _RegisterHero({required this.selectedRole});
 
@@ -130,6 +142,7 @@ class _RegisterHero extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Project status pill.
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
@@ -177,6 +190,7 @@ class _RegisterHero extends StatelessWidget {
   }
 }
 
+/// A segmented control for switching between registration roles.
 class _RoleSelector extends StatelessWidget {
   const _RoleSelector({required this.selectedRole, required this.onChanged});
 
@@ -218,6 +232,7 @@ class _RoleSelector extends StatelessWidget {
   }
 }
 
+/// Standardized text input field with an icon for authentication forms.
 class _AuthField extends StatelessWidget {
   const _AuthField({
     required this.label,
@@ -238,6 +253,7 @@ class _AuthField extends StatelessWidget {
   }
 }
 
+/// A summary card showing the status of required onboarding documents.
 class _DocumentReadinessCard extends StatelessWidget {
   const _DocumentReadinessCard();
 
@@ -294,6 +310,7 @@ class _DocumentReadinessCard extends StatelessWidget {
   }
 }
 
+/// Individual row for a document upload status item.
 class _DocumentRow extends StatelessWidget {
   const _DocumentRow({required this.title, required this.subtitle});
 
@@ -335,6 +352,7 @@ class _DocumentRow extends StatelessWidget {
   }
 }
 
+/// A small statistic or metric display used in the Hero section.
 class _HeroMetric extends StatelessWidget {
   const _HeroMetric({required this.value, required this.label});
 
