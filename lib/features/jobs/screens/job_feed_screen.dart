@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../core/services/supabase_service.dart';
+import '../../../theme/app_colors.dart';
+import '../../../widgets/job_card.dart';
+import '../../../widgets/kidme_logo.dart';
+import '../models/job_model.dart';
 
-import '../theme/app_colors.dart';
-import '../widgets/job_card.dart';
-import '../widgets/kidme_logo.dart';
-
+/// The primary feed for browsing job opportunities.
+///
+/// This screen fetches data from the [SupabaseService] to ensure 
+/// synchronization with the colleague's backend project.
 class JobFeedScreen extends StatefulWidget {
   const JobFeedScreen({super.key});
 
@@ -13,33 +18,15 @@ class JobFeedScreen extends StatefulWidget {
 
 class _JobFeedScreenState extends State<JobFeedScreen> {
   int _tabIndex = 0;
+  final _supabaseService = SupabaseService();
+  late Future<List<Job>> _jobsFuture;
 
-  final _jobs = const [
-    Job(
-      'Fale Tech',
-      'Flutter Mobile Developer',
-      "N'Djamena",
-      '350k-550k XAF',
-      96,
-      'New',
-    ),
-    Job(
-      'UNICEF Chad',
-      'Monitoring Assistant',
-      'Abeche',
-      'Contract',
-      91,
-      'Verified',
-    ),
-    Job(
-      'Design Lab',
-      'Junior UI/UX Designer',
-      'Remote',
-      '250k-420k XAF',
-      88,
-      'Interview',
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the job fetching future.
+    _jobsFuture = _supabaseService.getJobs();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +35,7 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
         child: IndexedStack(
           index: _tabIndex,
           children: [
-            _HomeTab(jobs: _jobs),
+            _HomeTab(jobsFuture: _jobsFuture),
             const _ApplicationsTab(),
             const _RecruiterPreviewTab(),
             const _ProfileTab(),
@@ -88,85 +75,101 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
 }
 
 class _HomeTab extends StatelessWidget {
-  const _HomeTab({required this.jobs});
+  const _HomeTab({required this.jobsFuture});
 
-  final List<Job> jobs;
+  final Future<List<Job>> jobsFuture;
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return FutureBuilder<List<Job>>(
+      future: jobsFuture,
+      builder: (context, snapshot) {
+        return CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const KidmeLogo(),
-                    const Spacer(),
-                    IconButton.filledTonal(
-                      onPressed: () {},
-                      icon: const Icon(Icons.notifications_none_rounded),
+                    Row(
+                      children: [
+                        const KidmeLogo(),
+                        const Spacer(),
+                        IconButton.filledTonal(
+                          onPressed: () {},
+                          icon: const Icon(Icons.notifications_none_rounded),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 22),
-                _HeroPanel(),
-                const SizedBox(height: 18),
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: 'Search role, organization, or city',
-                    prefixIcon: Icon(Icons.search_rounded),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const _CategoryChips(),
-                const SizedBox(height: 22),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Featured jobs',
-                        style: Theme.of(context).textTheme.titleLarge,
+                    const SizedBox(height: 22),
+                    const _HeroPanel(),
+                    const SizedBox(height: 18),
+                    const TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search role, organization, or city',
+                        prefixIcon: Icon(Icons.search_rounded),
                       ),
                     ),
-                    TextButton(onPressed: () {}, child: const Text('View all')),
+                    const SizedBox(height: 16),
+                    const _CategoryChips(),
+                    const SizedBox(height: 22),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Featured jobs',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                        TextButton(onPressed: () {}, child: const Text('View all')),
+                      ],
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-          sliver: SliverList.builder(
-            itemCount: jobs.length,
-            itemBuilder: (context, index) {
-              final job = jobs[index];
-              return JobCard(
-                company: job.company,
-                role: job.role,
-                location: job.location,
-                salary: job.salary,
-                match: job.match,
-                status: job.status,
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => JobDetailScreen(job: job),
-                  ),
+            if (snapshot.connectionState == ConnectionState.waiting)
+              const SliverFillRemaining(
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else if (snapshot.hasError)
+              SliverFillRemaining(
+                child: Center(child: Text('Error: ${snapshot.error}')),
+              )
+            else
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                sliver: SliverList.builder(
+                  itemCount: snapshot.data?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    final job = snapshot.data![index];
+                    return JobCard(
+                      company: job.company,
+                      role: job.role,
+                      location: job.location,
+                      salary: job.salary,
+                      match: job.match,
+                      status: job.status,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => JobDetailScreen(job: job),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              ),
+          ],
+        );
+      },
     );
   }
 }
 
 class _HeroPanel extends StatelessWidget {
+  const _HeroPanel();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -324,10 +327,10 @@ class JobDetailScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 18),
-                  Wrap(
+                  const Wrap(
                     spacing: 10,
                     runSpacing: 10,
-                    children: const [
+                    children: [
                       _InfoPill(
                         icon: Icons.schedule_rounded,
                         text: 'Full-time',
@@ -349,23 +352,27 @@ class JobDetailScreen extends StatelessWidget {
           const SizedBox(height: 18),
           Text('About the role', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
-          const Text(
-            'Join a growing team building useful digital services for Chad. You will collaborate with product, design, and operations teams to deliver reliable mobile experiences for candidates and recruiters.',
+          Text(
+            job.description ?? 'Join a growing team building useful digital services for Chad. You will collaborate with product, design, and operations teams to deliver reliable mobile experiences for candidates and recruiters.',
           ),
           const SizedBox(height: 20),
           Text('Requirements', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
-          const _Requirement(
-            text: 'Strong communication and professional discipline',
-          ),
-          const _Requirement(
-            text:
-                'Experience with mobile apps, customer support, or field work',
-          ),
-          const _Requirement(
-            text:
-                'Complete profile with diploma, ID, and recent criminal record',
-          ),
+          if (job.requirements != null && job.requirements!.isNotEmpty)
+             ...job.requirements!.map((r) => _Requirement(text: r))
+          else ...const [
+            _Requirement(
+              text: 'Strong communication and professional discipline',
+            ),
+            _Requirement(
+              text:
+                  'Experience with mobile apps, customer support, or field work',
+            ),
+            _Requirement(
+              text:
+                  'Complete profile with diploma, ID, and recent criminal record',
+            ),
+          ],
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {},
@@ -421,12 +428,12 @@ class _RecruiterPreviewTab extends StatelessWidget {
         const SizedBox(height: 18),
         const _MetricGrid(),
         const SizedBox(height: 18),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Top candidates',
                   style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
@@ -466,15 +473,15 @@ class _ProfileTab extends StatelessWidget {
       children: [
         Text('My profile', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 16),
-        Card(
+        const Card(
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 31,
                       backgroundColor: AppColors.blueMist,
                       child: Icon(
@@ -482,11 +489,11 @@ class _ProfileTab extends StatelessWidget {
                         color: AppColors.professionalBlue,
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
+                        children: [
                           Text(
                             'Complete your Kidme profile',
                             style: TextStyle(
@@ -500,8 +507,8 @@ class _ProfileTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
-                const _ProgressCard(
+                SizedBox(height: 18),
+                _ProgressCard(
                   title: 'Profile strength',
                   subtitle: 'Add NNI, diploma, cover letter, and documents.',
                   progress: 0.48,
@@ -759,22 +766,4 @@ class _CandidateRow extends StatelessWidget {
       ),
     );
   }
-}
-
-class Job {
-  const Job(
-    this.company,
-    this.role,
-    this.location,
-    this.salary,
-    this.match,
-    this.status,
-  );
-
-  final String company;
-  final String role;
-  final String location;
-  final String salary;
-  final int match;
-  final String status;
 }

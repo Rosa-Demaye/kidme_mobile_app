@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_colors.dart';
-import '../widgets/kidme_button.dart';
-import '../widgets/kidme_card.dart';
-import '../widgets/kidme_logo.dart';
-import 'job_feed_screen.dart';
+import '../../../theme/app_colors.dart';
+import '../../../widgets/kidme_button.dart';
+import '../../../widgets/kidme_card.dart';
+import '../../../widgets/kidme_logo.dart';
+import '../../jobs/screens/job_feed_screen.dart';
 
+/// The [LoginScreen] handles existing user authentication.
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 

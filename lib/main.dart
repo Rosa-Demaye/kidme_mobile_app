@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'screens/register_screen.dart';
+import 'features/auth/screens/register_screen.dart';
 import 'theme/app_theme.dart';
 
 /// Entry point of the Kidme Mobile Application.
@@ -12,7 +12,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Supabase with project credentials.
-  // The anonKey and URL are essential for communicating with the backend services.
+  // URL: https://aelwijmnnbbjzhamfulb.supabase.co
   await Supabase.initialize(
     url: 'https://aelwijmnnbbjzhamfulb.supabase.co',
     anonKey:
