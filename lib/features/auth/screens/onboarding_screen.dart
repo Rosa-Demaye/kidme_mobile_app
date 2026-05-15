@@ -63,6 +63,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(height: 32),
                   KidmeButton(
                     label: _currentPage == _content.length - 1 ? 'Get Started' : 'Continue',
+                    icon: Icons.arrow_forward_rounded,
                     onPressed: () {
                       if (_currentPage < _content.length - 1) {
                         _pageController.nextPage(
