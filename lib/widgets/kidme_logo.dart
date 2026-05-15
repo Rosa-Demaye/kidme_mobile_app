@@ -3,36 +3,103 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
 class KidmeLogo extends StatelessWidget {
-  const KidmeLogo({super.key});
+  const KidmeLogo({
+    super.key,
+    this.iconSize = 34,
+    this.textSize = 22,
+    this.showWordmark = true,
+    this.light = false,
+  });
+
+  final double iconSize;
+  final double textSize;
+  final bool showWordmark;
+  final bool light;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          height: 34,
-          width: 34,
-          decoration: BoxDecoration(
-            color: AppColors.primaryNavy,
-            borderRadius: BorderRadius.circular(12),
+        _KidmeMark(size: iconSize),
+        if (showWordmark) ...[
+          SizedBox(width: iconSize * 0.28),
+          Text(
+            'kidme',
+            style: TextStyle(
+              color: light ? Colors.white : AppColors.primaryNavy,
+              fontSize: textSize,
+              fontWeight: FontWeight.w900,
+              letterSpacing: 0,
+            ),
           ),
-          child: const Icon(
-            Icons.work_rounded,
-            color: AppColors.goldAccent,
-            size: 19,
-          ),
-        ),
-        const SizedBox(width: 10),
-        const Text(
-          'Kidme',
-          style: TextStyle(
-            color: AppColors.primaryNavy,
-            fontSize: 22,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+        ],
       ],
+    );
+  }
+}
+
+class _KidmeMark extends StatelessWidget {
+  const _KidmeMark({required this.size});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: size,
+      width: size,
+      padding: EdgeInsets.all(size * 0.09),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(size * 0.24),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryNavy.withAlpha(30),
+            blurRadius: size * 0.35,
+            offset: Offset(0, size * 0.14),
+          ),
+        ],
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [AppColors.primaryNavy, AppColors.emerald],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(size * 0.22),
+            ),
+            child: Center(
+              child: Text(
+                'k',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: size * 0.55,
+                  fontWeight: FontWeight.w900,
+                  height: 0.95,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: -size * 0.06,
+            bottom: -size * 0.06,
+            child: Container(
+              height: size * 0.26,
+              width: size * 0.26,
+              decoration: BoxDecoration(
+                color: AppColors.softMint,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: size * 0.05),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

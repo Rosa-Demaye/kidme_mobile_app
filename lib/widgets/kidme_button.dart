@@ -8,7 +8,7 @@ class KidmeButton extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.onPressed,
-    this.backgroundColor = AppColors.professionalBlue,
+    this.backgroundColor = AppColors.primaryNavy,
     this.foregroundColor = Colors.white,
   });
 

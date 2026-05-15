@@ -50,7 +50,7 @@ class JobCard extends StatelessWidget {
                           role,
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        Text('$company • $location'),
+                        Text('$company - $location'),
                       ],
                     ),
                   ),
