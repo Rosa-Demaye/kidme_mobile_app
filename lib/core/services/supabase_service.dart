@@ -11,19 +11,10 @@ class SupabaseService {
   final _client = Supabase.instance.client;
 
   /// Fetches the list of active job postings.
-  ///
-  /// Currently uses mock data logic but is ready to connect to
-  /// the 'jobs' table once the colleague's schema is finalized.
   Future<List<Job>> getJobs() async {
     try {
-      // Logic for real data:
-      // final response = await _client.from('jobs').select();
-      // return (response as List).map((json) => Job.fromJson(json)).toList();
-
       // Fallback/Mock data for development consistency:
-      await Future.delayed(
-        const Duration(milliseconds: 800),
-      ); // Simulate network
+      await Future.delayed(const Duration(milliseconds: 800));
       return const [
         Job(
           id: '1',
@@ -54,7 +45,6 @@ class SupabaseService {
         ),
       ];
     } catch (e) {
-      // Professional error logging (using debugPrint for development)
       debugPrint('SupabaseService Error: $e');
       return [];
     }
@@ -71,5 +61,21 @@ class SupabaseService {
       password: password,
       data: metadata,
     );
+  }
+
+  /// Handles user sign in with Supabase Auth.
+  Future<AuthResponse> signIn({
+    required String email,
+    required String password,
+  }) async {
+    return await _client.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+  }
+
+  /// Handles user sign out.
+  Future<void> signOut() async {
+    await _client.auth.signOut();
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/services/supabase_service.dart';
 import '../../../theme/app_colors.dart';
 import '../../../widgets/kidme_button.dart';
 import '../../../widgets/kidme_card.dart';
@@ -16,7 +18,80 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _supabaseService = SupabaseService();
+  
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nniController = TextEditingController();
+  
   int _selectedRole = 0;
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _nniController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleRegister() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final fullName = _fullNameController.text.trim();
+    final nni = _nniController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || fullName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all required fields')),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _supabaseService.signUp(
+        email: email,
+        password: password,
+        metadata: {
+          'full_name': fullName,
+          'nni': nni,
+          'role': _selectedRole == 0 ? 'candidate' : 'employer',
+        },
+      );
+
+      if (mounted) {
+        // Show success message and navigate
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration successful! Check your email for verification.')),
+        );
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(
+            builder: (_) => const JobFeedScreen(),
+          ),
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), backgroundColor: Colors.red),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An unexpected error occurred'), backgroundColor: Colors.red),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,36 +135,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     onChanged: (value) => setState(() => _selectedRole = value),
                   ),
                   const SizedBox(height: 18),
-                  const _AuthField(
+                  _AuthField(
                     label: 'Full name',
                     icon: Icons.person_outline_rounded,
+                    controller: _fullNameController,
                   ),
                   const SizedBox(height: 12),
-                  const _AuthField(
+                  _AuthField(
                     label: 'Email address',
                     icon: Icons.mail_outline_rounded,
+                    controller: _emailController,
                   ),
                   const SizedBox(height: 12),
-                  const _AuthField(
+                  _AuthField(
                     label: 'Password',
                     icon: Icons.lock_outline_rounded,
                     obscureText: true,
+                    controller: _passwordController,
                   ),
                   const SizedBox(height: 12),
-                  const _AuthField(
-                    label: 'National Identity Number',
+                  _AuthField(
+                    label: 'National Identity Number (NNI)',
                     icon: Icons.badge_outlined,
+                    controller: _nniController,
                   ),
                   const SizedBox(height: 18),
-                  KidmeButton(
-                    label: 'Create account',
-                    icon: Icons.verified_user_outlined,
-                    onPressed: () => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const JobFeedScreen(),
-                      ),
+                  if (_isLoading)
+                    const Center(child: CircularProgressIndicator())
+                  else
+                    KidmeButton(
+                      label: 'Create account',
+                      icon: Icons.verified_user_outlined,
+                      onPressed: _handleRegister,
                     ),
-                  ),
                 ],
               ),
             ),
@@ -223,16 +301,19 @@ class _AuthField extends StatelessWidget {
   const _AuthField({
     required this.label,
     required this.icon,
+    required this.controller,
     this.obscureText = false,
   });
 
   final String label;
   final IconData icon;
+  final TextEditingController controller;
   final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       obscureText: obscureText,
       decoration: InputDecoration(labelText: label, prefixIcon: Icon(icon)),
     );
