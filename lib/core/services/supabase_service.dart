@@ -1,26 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../features/jobs/models/job_model.dart';
 
 /// A centralized service to handle all Supabase interactions.
 ///
 /// This service abstracts the data fetching logic from the UI,
-/// ensuring that schema changes in the colleague's database 
+/// ensuring that schema changes in the colleague's database
 /// can be managed in one place without "crashing" the app.
 class SupabaseService {
   final _client = Supabase.instance.client;
 
   /// Fetches the list of active job postings.
-  /// 
-  /// Currently uses mock data logic but is ready to connect to 
+  ///
+  /// Currently uses mock data logic but is ready to connect to
   /// the 'jobs' table once the colleague's schema is finalized.
   Future<List<Job>> getJobs() async {
     try {
       // Logic for real data:
       // final response = await _client.from('jobs').select();
       // return (response as List).map((json) => Job.fromJson(json)).toList();
-      
+
       // Fallback/Mock data for development consistency:
-      await Future.delayed(const Duration(milliseconds: 800)); // Simulate network
+      await Future.delayed(
+        const Duration(milliseconds: 800),
+      ); // Simulate network
       return const [
         Job(
           id: '1',
@@ -51,8 +54,8 @@ class SupabaseService {
         ),
       ];
     } catch (e) {
-      // Professional error logging
-      print('SupabaseService Error: $e');
+      // Professional error logging (using debugPrint for development)
+      debugPrint('SupabaseService Error: $e');
       return [];
     }
   }

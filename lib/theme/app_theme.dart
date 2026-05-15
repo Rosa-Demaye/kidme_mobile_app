@@ -28,7 +28,6 @@ class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.softWhite,
       fontFamily: 'Roboto', // Professional, readable sans-serif font.
-      
       // Typography system emphasizing hierarchy and clarity.
       textTheme: const TextTheme(
         displaySmall: TextStyle(
@@ -63,7 +62,7 @@ class AppTheme {
           height: 1.35,
         ),
       ),
-      
+
       // Clean, flat AppBar style.
       appBarTheme: const AppBarTheme(
         backgroundColor: AppColors.softWhite,
@@ -71,7 +70,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
       ),
-      
+
       // Soft card styling with subtle borders instead of heavy shadows.
       cardTheme: CardThemeData(
         color: Colors.white,
@@ -81,7 +80,7 @@ class AppTheme {
           side: const BorderSide(color: AppColors.cardBorder),
         ),
       ),
-      
+
       // Bold, high-contrast action buttons.
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -94,7 +93,7 @@ class AppTheme {
           textStyle: const TextStyle(fontWeight: FontWeight.w800),
         ),
       ),
-      
+
       // Modern input field styling with a soft background.
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

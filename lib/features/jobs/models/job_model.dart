@@ -35,7 +35,9 @@ class Job {
       match: json['match_score'] ?? json['match'] ?? 0,
       status: json['status'] ?? 'Active',
       description: json['description'],
-      requirements: (json['requirements'] as List?)?.map((e) => e.toString()).toList(),
+      requirements: (json['requirements'] as List?)
+          ?.map((e) => e.toString())
+          .toList(),
     );
   }
 

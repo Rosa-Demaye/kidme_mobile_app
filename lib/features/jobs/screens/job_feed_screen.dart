@@ -7,7 +7,7 @@ import '../models/job_model.dart';
 
 /// The primary feed for browsing job opportunities.
 ///
-/// This screen fetches data from the [SupabaseService] to ensure 
+/// This screen fetches data from the [SupabaseService] to ensure
 /// synchronization with the colleague's backend project.
 class JobFeedScreen extends StatefulWidget {
   const JobFeedScreen({super.key});
@@ -122,7 +122,10 @@ class _HomeTab extends StatelessWidget {
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
-                        TextButton(onPressed: () {}, child: const Text('View all')),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('View all'),
+                        ),
                       ],
                     ),
                   ],
@@ -353,13 +356,14 @@ class JobDetailScreen extends StatelessWidget {
           Text('About the role', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
-            job.description ?? 'Join a growing team building useful digital services for Chad. You will collaborate with product, design, and operations teams to deliver reliable mobile experiences for candidates and recruiters.',
+            job.description ??
+                'Join a growing team building useful digital services for Chad. You will collaborate with product, design, and operations teams to deliver reliable mobile experiences for candidates and recruiters.',
           ),
           const SizedBox(height: 20),
           Text('Requirements', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           if (job.requirements != null && job.requirements!.isNotEmpty)
-             ...job.requirements!.map((r) => _Requirement(text: r))
+            ...job.requirements!.map((r) => _Requirement(text: r))
           else ...const [
             _Requirement(
               text: 'Strong communication and professional discipline',

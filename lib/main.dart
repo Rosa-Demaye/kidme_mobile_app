@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'features/auth/screens/register_screen.dart';
+import 'features/auth/screens/splash_screen.dart';
 import 'theme/app_theme.dart';
 
 /// Entry point of the Kidme Mobile Application.
@@ -36,8 +36,8 @@ class KidmeApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       // Apply the centralized light theme defined in AppTheme.
       theme: AppTheme.light,
-      // The application starts on the Registration screen to onboard new users.
-      home: const RegisterScreen(),
+      // The application starts on the Splash screen to establish branding.
+      home: const SplashScreen(),
     );
   }
 }
