@@ -89,36 +89,36 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       duration: const Duration(milliseconds: 220),
                       child: _role == KidmeRole.recruiter
                           ? Column(
-                              key: const ValueKey('recruiter-options'),
-                              children: [
-                                const SizedBox(height: 14),
-                                _RecruiterBranch(
-                                  selected:
-                                      _recruiterType == RecruiterType.gigs,
-                                  title: 'Small Gigs & Individuals',
-                                  subtitle:
-                                      'Hire informal help, quick tasks, one-off projects.',
-                                  icon: Icons.storefront_outlined,
-                                  onTap: () => setState(
-                                    () => _recruiterType = RecruiterType.gigs,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                _RecruiterBranch(
-                                  selected:
-                                      _recruiterType ==
-                                      RecruiterType.enterprise,
-                                  title: 'Enterprise & Corporate',
-                                  subtitle:
-                                      'Post vacancies for formal roles and permanent staff.',
-                                  icon: Icons.apartment_rounded,
-                                  onTap: () => setState(
-                                    () => _recruiterType =
-                                        RecruiterType.enterprise,
-                                  ),
-                                ),
-                              ],
-                            )
+                        key: const ValueKey('recruiter-options'),
+                        children: [
+                          const SizedBox(height: 14),
+                          _RecruiterBranch(
+                            selected:
+                            _recruiterType == RecruiterType.gigs,
+                            title: 'Small Gigs & Individuals',
+                            subtitle:
+                            'Hire informal help, quick tasks, one-off projects.',
+                            icon: Icons.storefront_outlined,
+                            onTap: () => setState(
+                                  () => _recruiterType = RecruiterType.gigs,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          _RecruiterBranch(
+                            selected:
+                            _recruiterType ==
+                                RecruiterType.enterprise,
+                            title: 'Enterprise & Corporate',
+                            subtitle:
+                            'Post vacancies for formal roles and permanent staff.',
+                            icon: Icons.apartment_rounded,
+                            onTap: () => setState(
+                                  () => _recruiterType =
+                                  RecruiterType.enterprise,
+                            ),
+                          ),
+                        ],
+                      )
                           : const SizedBox.shrink(),
                     ),
                   ),
@@ -128,22 +128,22 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     icon: Icons.person_outline_rounded,
                     title: 'I am a Job Seeker',
                     subtitle:
-                        'Find work, browse postings, and build your career.',
+                    'Find work, browse postings, and build your career.',
                     onTap: () => setState(() => _role = KidmeRole.jobSeeker),
                   ),
                   const SizedBox(height: 18),
                   _FeatureStrip(
                     items: _role == KidmeRole.recruiter
                         ? const [
-                            ('Fast filters', Icons.tune_rounded),
-                            ('Shortlists', Icons.playlist_add_check_rounded),
-                            ('Verified talent', Icons.verified_rounded),
-                          ]
+                      ('Fast filters', Icons.tune_rounded),
+                      ('Shortlists', Icons.playlist_add_check_rounded),
+                      ('Verified talent', Icons.verified_rounded),
+                    ]
                         : const [
-                            ('AI CV builder', Icons.description_outlined),
-                            ('Job matching', Icons.auto_awesome_rounded),
-                            ('Application tracker', Icons.timeline_rounded),
-                          ],
+                      ('AI CV builder', Icons.description_outlined),
+                      ('Job matching', Icons.auto_awesome_rounded),
+                      ('Application tracker', Icons.timeline_rounded),
+                    ],
                   ),
                 ],
               ),
@@ -214,8 +214,8 @@ class _RoleCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: selected
                         ? const LinearGradient(
-                            colors: [AppColors.primaryNavy, AppColors.emerald],
-                          )
+                      colors: [AppColors.primaryNavy, AppColors.emerald],
+                    )
                         : null,
                     color: selected ? null : AppColors.cardBorder,
                     borderRadius: BorderRadius.circular(16),
@@ -245,7 +245,7 @@ class _RoleCard extends StatelessWidget {
                 ),
               ],
             ),
-            child?,
+            if (child != null) child!,
           ],
         ),
       ),
@@ -324,12 +324,12 @@ class _FeatureStrip extends StatelessWidget {
       children: items
           .map(
             (item) => Chip(
-              avatar: Icon(item.$2, size: 17, color: AppColors.primaryNavy),
-              label: Text(item.$1),
-              backgroundColor: Colors.white,
-              side: const BorderSide(color: AppColors.cardBorder),
-            ),
-          )
+          avatar: Icon(item.$2, size: 17, color: AppColors.primaryNavy),
+          label: Text(item.$1),
+          backgroundColor: Colors.white,
+          side: const BorderSide(color: AppColors.cardBorder),
+        ),
+      )
           .toList(),
     );
   }
