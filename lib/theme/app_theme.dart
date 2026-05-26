@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
@@ -15,39 +16,42 @@ class AppTheme {
       surface: Colors.white,
     );
 
+    final textTheme = GoogleFonts.interTextTheme();
+
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.mist,
-      fontFamily: 'Roboto',
-      textTheme: const TextTheme(
-        displaySmall: TextStyle(
+      textTheme: textTheme.copyWith(
+        displaySmall: GoogleFonts.inter(
           color: AppColors.primaryNavy,
           fontSize: 34,
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.w900,
           height: 1.05,
+          letterSpacing: -0.5,
         ),
-        headlineSmall: TextStyle(
+        headlineSmall: GoogleFonts.inter(
           color: AppColors.primaryNavy,
           fontSize: 24,
           fontWeight: FontWeight.w800,
+          letterSpacing: -0.3,
         ),
-        titleLarge: TextStyle(
+        titleLarge: GoogleFonts.inter(
           color: AppColors.darkText,
           fontSize: 20,
           fontWeight: FontWeight.w800,
         ),
-        titleMedium: TextStyle(
+        titleMedium: GoogleFonts.inter(
           color: AppColors.darkText,
           fontSize: 16,
           fontWeight: FontWeight.w700,
         ),
-        bodyLarge: TextStyle(
+        bodyLarge: GoogleFonts.inter(
           color: AppColors.darkText,
           fontSize: 15,
           height: 1.45,
         ),
-        bodyMedium: TextStyle(
+        bodyMedium: GoogleFonts.inter(
           color: AppColors.softGrey,
           fontSize: 13,
           height: 1.35,
