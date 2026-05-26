@@ -8,7 +8,7 @@ class SupabaseService {
   /// Fetches the list of jobs.
   Future<List<Job>> getJobs() async {
     try {
-      // For now, returning mock data to maintain UI consistency 
+      // For now, returning mock data to maintain UI consistency
       // while the backend schema is being finalized by your colleague.
       await Future.delayed(const Duration(milliseconds: 600));
       return const [

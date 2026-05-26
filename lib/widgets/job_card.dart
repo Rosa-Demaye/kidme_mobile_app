@@ -74,25 +74,48 @@ class JobCard extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: LinearProgressIndicator(
-                        minHeight: 7,
-                        value: match / 100,
-                        backgroundColor: AppColors.cardBorder,
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.emerald,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(999),
+                            child: LinearProgressIndicator(
+                              minHeight: 7,
+                              value: match / 100,
+                              backgroundColor: AppColors.cardBorder,
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColors.emerald,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(width: 12),
+                        Text(
+                          '$match% match',
+                          style: const TextStyle(
+                            color: AppColors.emerald,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Text(
-                    '$match% match',
-                    style: const TextStyle(
-                      color: AppColors.emerald,
-                      fontWeight: FontWeight.w800,
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryNavy,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      minimumSize: Size.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
+                    child: const Text('Apply'),
                   ),
                 ],
               ),

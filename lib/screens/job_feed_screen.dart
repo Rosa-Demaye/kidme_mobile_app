@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../core/services/supabase_service.dart';
+import '../features/events/screens/calendar_screen.dart';
+import '../features/events/screens/events_for_you_screen.dart';
 import '../features/jobs/models/job_model.dart';
+import '../features/notifications/screens/notifications_screen.dart';
 import '../theme/app_colors.dart';
 import '../widgets/job_card.dart';
 import '../widgets/kidme_logo.dart';
@@ -32,6 +35,8 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
           index: _tabIndex,
           children: [
             _HomeTab(jobsFuture: _jobsFuture),
+            const EventsForYouScreen(),
+            const CalendarScreen(),
             const _ApplicationsTab(),
             const _RecruiterPreviewTab(),
             const _ProfileTab(),
@@ -39,8 +44,14 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
         ),
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex,
-        onDestinationSelected: (index) => setState(() => _tabIndex = index),
+        selectedIndex: _tabIndex > 3
+            ? 3
+            : _tabIndex, // Map more tabs to limited slots or expand
+        onDestinationSelected: (index) {
+          setState(() {
+            _tabIndex = index;
+          });
+        },
         backgroundColor: Colors.white,
         indicatorColor: AppColors.blueMist,
         destinations: const [
@@ -50,14 +61,14 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.bookmark_border_rounded),
-            selectedIcon: Icon(Icons.bookmark_rounded),
-            label: 'Saved',
+            icon: Icon(Icons.explore_outlined),
+            selectedIcon: Icon(Icons.explore_rounded),
+            label: 'Events',
           ),
           NavigationDestination(
-            icon: Icon(Icons.business_center_outlined),
-            selectedIcon: Icon(Icons.business_center_rounded),
-            label: 'Recruiter',
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month_rounded),
+            label: 'Schedule',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline_rounded),
@@ -93,7 +104,13 @@ class _HomeTab extends StatelessWidget {
                         const KidmeLogo(),
                         const Spacer(),
                         IconButton.filledTonal(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const NotificationsScreen(),
+                              ),
+                            );
+                          },
                           icon: const Icon(Icons.notifications_none_rounded),
                         ),
                       ],
@@ -500,93 +517,295 @@ class _ProfileTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(20),
-      children: [
-        Text('My profile', style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 16),
-        const Card(
-          child: Padding(
-            padding: EdgeInsets.all(18),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 31,
-                      backgroundColor: AppColors.blueMist,
-                      child: Icon(
-                        Icons.verified_user_rounded,
-                        color: AppColors.professionalBlue,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.share_outlined),
+            tooltip: 'Share Profile',
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.edit_outlined),
+            tooltip: 'Edit Profile',
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          const Card(
+            child: Padding(
+              padding: EdgeInsets.all(18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 31,
+                        backgroundColor: AppColors.blueMist,
+                        child: Icon(
+                          Icons.verified_user_rounded,
+                          color: AppColors.professionalBlue,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Rosa Demaye',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 18,
+                      SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Rosa Demaye',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18,
+                              ),
                             ),
-                          ),
-                          Text('Verified graduate - Open to work'),
-                        ],
+                            Text('Verified graduate - Open to work'),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  SizedBox(height: 18),
+                  _ProgressCard(
+                    title: 'Profile strength',
+                    subtitle: 'Add video intro, portfolio, and language level.',
+                    progress: 0.74,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          _ProfileSection(
+            title: 'Contact Information',
+            child: Column(
+              children: const [
+                _ContactRow(
+                  icon: Icons.email_outlined,
+                  text: 'rosa.demaye@email.com',
                 ),
-                SizedBox(height: 18),
-                _ProgressCard(
-                  title: 'Profile strength',
-                  subtitle: 'Add video intro, portfolio, and language level.',
-                  progress: 0.74,
+                _ContactRow(
+                  icon: Icons.phone_android_outlined,
+                  text: '+235 60 00 00 00',
+                ),
+                _ContactRow(
+                  icon: Icons.location_on_outlined,
+                  text: "N'Djamena, Chad",
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 18),
+          _ProfileSection(
+            title: 'Professional Experience',
+            child: Column(
+              children: const [
+                _ExperienceItem(
+                  role: 'Junior Developer',
+                  company: 'Fale Tech',
+                  period: '2025 - Present',
+                ),
+                _ExperienceItem(
+                  role: 'Intern',
+                  company: 'UNICEF Chad',
+                  period: '2024 - 2025',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 18),
+          _ProfileSection(
+            title: 'Projects Showcase',
+            child: Column(
+              children: const [
+                _ProjectItem(
+                  title: 'Kidme Mobile App',
+                  description: 'A recruitment platform for the Chadian market.',
+                ),
+                _ProjectItem(
+                  title: 'Local NGO Tracker',
+                  description: 'Real-time tracking of humanitarian aid.',
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Platform Features',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 12),
+          const _ProfileFeature(
+            icon: Icons.verified_outlined,
+            title: 'Professional verification',
+            subtitle: 'ID, diploma, phone, email, and certificate checks.',
+            status: '3/5 verified',
+          ),
+          const _ProfileFeature(
+            icon: Icons.description_outlined,
+            title: 'AI CV builder',
+            subtitle: 'Export an ATS-friendly PDF from profile data.',
+            status: 'Draft ready',
+          ),
+          const _ProfileFeature(
+            icon: Icons.video_camera_front_outlined,
+            title: 'Video introduction',
+            subtitle: 'Record a short pitch in French, English, or Arabic.',
+            status: 'Add video',
+          ),
+          const _ProfileFeature(
+            icon: Icons.workspaces_outline,
+            title: 'Portfolio and projects',
+            subtitle:
+                'GitHub links, certificates, project images, and research.',
+            status: '2 projects',
+          ),
+          const _ProfileFeature(
+            icon: Icons.psychology_alt_outlined,
+            title: 'Skill gap analyzer',
+            subtitle: 'See missing skills before applying to a role.',
+            status: '70% ready',
+          ),
+          const _ProfileFeature(
+            icon: Icons.timeline_rounded,
+            title: 'Application tracking',
+            subtitle: 'Applied, viewed, shortlisted, interview, accepted.',
+            status: '6 active',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileSection extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _ProfileSection({required this.title, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: AppColors.primaryNavy,
+          ),
         ),
-        const SizedBox(height: 14),
-        const _ProfileFeature(
-          icon: Icons.verified_outlined,
-          title: 'Professional verification',
-          subtitle: 'ID, diploma, phone, email, and certificate checks.',
-          status: '3/5 verified',
-        ),
-        const _ProfileFeature(
-          icon: Icons.description_outlined,
-          title: 'AI CV builder',
-          subtitle: 'Export an ATS-friendly PDF from profile data.',
-          status: 'Draft ready',
-        ),
-        const _ProfileFeature(
-          icon: Icons.video_camera_front_outlined,
-          title: 'Video introduction',
-          subtitle: 'Record a short pitch in French, English, or Arabic.',
-          status: 'Add video',
-        ),
-        const _ProfileFeature(
-          icon: Icons.workspaces_outline,
-          title: 'Portfolio and projects',
-          subtitle: 'GitHub links, certificates, project images, and research.',
-          status: '2 projects',
-        ),
-        const _ProfileFeature(
-          icon: Icons.psychology_alt_outlined,
-          title: 'Skill gap analyzer',
-          subtitle: 'See missing skills before applying to a role.',
-          status: '70% ready',
-        ),
-        const _ProfileFeature(
-          icon: Icons.timeline_rounded,
-          title: 'Application tracking',
-          subtitle: 'Applied, viewed, shortlisted, interview, accepted.',
-          status: '6 active',
+        const SizedBox(height: 12),
+        Card(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+            side: const BorderSide(color: AppColors.cardBorder),
+          ),
+          child: Padding(padding: const EdgeInsets.all(16.0), child: child),
         ),
       ],
+    );
+  }
+}
+
+class _ContactRow extends StatelessWidget {
+  final IconData icon;
+  final String text;
+
+  const _ContactRow({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.professionalBlue),
+          const SizedBox(width: 12),
+          Text(text, style: const TextStyle(fontSize: 14)),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExperienceItem extends StatelessWidget {
+  final String role;
+  final String company;
+  final String period;
+
+  const _ExperienceItem({
+    required this.role,
+    required this.company,
+    required this.period,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.business_center_rounded, color: AppColors.softGrey),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(role, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  company,
+                  style: const TextStyle(
+                    color: AppColors.softGrey,
+                    fontSize: 13,
+                  ),
+                ),
+                Text(
+                  period,
+                  style: const TextStyle(
+                    color: AppColors.softGrey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProjectItem extends StatelessWidget {
+  final String title;
+  final String description;
+
+  const _ProjectItem({required this.title, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(
+            description,
+            style: const TextStyle(color: AppColors.softGrey, fontSize: 13),
+          ),
+        ],
+      ),
     );
   }
 }
