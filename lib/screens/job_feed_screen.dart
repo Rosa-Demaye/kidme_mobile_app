@@ -6,6 +6,7 @@ import '../features/cv_builder/screens/cv_builder_screen.dart';
 import '../features/events/screens/calendar_screen.dart';
 import '../features/events/screens/events_for_you_screen.dart';
 import '../features/jobs/models/job_model.dart';
+import '../features/learning_hub/screens/learning_hub_screen.dart';
 import '../features/notifications/screens/notifications_screen.dart';
 import '../features/portfolio/screens/portfolio_screen.dart';
 import '../features/skills/screens/skill_gap_analyzer_screen.dart';
@@ -40,16 +41,15 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
           children: [
             _HomeTab(jobsFuture: _jobsFuture),
             const EventsForYouScreen(),
+            const LearningHubScreen(),
             const ConversationListScreen(),
             const _ProfileTab(),
-            const CalendarScreen(), // Index 4, hidden from main nav but accessible
+            const CalendarScreen(),
           ],
         ),
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex == 4
-            ? 1
-            : _tabIndex, // Map Calendar to Events slot highlight
+        selectedIndex: _tabIndex >= 4 ? 1 : _tabIndex,
         onDestinationSelected: (index) {
           setState(() {
             _tabIndex = index;
@@ -67,6 +67,11 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
             icon: Icon(Icons.explore_outlined),
             selectedIcon: Icon(Icons.explore_rounded),
             label: 'Events',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.school_outlined),
+            selectedIcon: Icon(Icons.school_rounded),
+            label: 'Learning',
           ),
           NavigationDestination(
             icon: Icon(Icons.chat_bubble_outline_rounded),
@@ -123,7 +128,7 @@ class _HomeTab extends StatelessWidget {
                     const SizedBox(height: 18),
                     const TextField(
                       decoration: InputDecoration(
-                        hintText: 'Search role, organization, or city',
+                        hintText: 'Search NGO, Oil, Banking...',
                         prefixIcon: Icon(Icons.search_rounded),
                       ),
                     ),
@@ -134,7 +139,7 @@ class _HomeTab extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            'Featured jobs',
+                            'Smart recommendations',
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
@@ -236,7 +241,7 @@ class _HeroPanel extends StatelessWidget {
                     backgroundColor: AppColors.goldAccent,
                     foregroundColor: AppColors.primaryNavy,
                   ),
-                  child: const Text('Create profile'),
+                  child: const Text('Complete profile'),
                 ),
               ),
               const SizedBox(width: 12),
@@ -266,10 +271,11 @@ class _CategoryChips extends StatelessWidget {
     const categories = [
       'All',
       'NGO',
-      'Tech',
-      'Finance',
+      'Oil & Gas',
+      'Telecom',
+      'Banking',
       'Remote',
-      'Internship',
+      'Gov',
     ];
     return SizedBox(
       height: 38,
@@ -310,6 +316,11 @@ class JobDetailScreen extends StatelessWidget {
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.bookmark_border_rounded),
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.report_problem_outlined, color: Colors.red),
+            tooltip: 'Report Scam',
           ),
         ],
       ),
@@ -394,10 +405,25 @@ class JobDetailScreen extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.send_rounded),
-            label: const Text('Apply now'),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.send_rounded),
+                  label: const Text('Apply now'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              IconButton.filled(
+                onPressed: () {},
+                icon: const Icon(Icons.chat_rounded),
+                style: IconButton.styleFrom(
+                  backgroundColor: const Color(0xFF25D366),
+                ),
+                tooltip: 'Contact via WhatsApp',
+              ),
+            ],
           ),
         ],
       ),
@@ -427,12 +453,15 @@ class _ApplicationsTabState extends State<_ApplicationsTab> {
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
-        Text('Saved jobs', style: Theme.of(context).textTheme.headlineSmall),
+        Text(
+          'Application Status',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         const SizedBox(height: 14),
         const _ProgressCard(
-          title: 'Application kit',
-          subtitle: 'Upload diploma, national ID, and recent criminal record.',
-          progress: 0.62,
+          title: 'Profile Readiness',
+          subtitle: 'Verify your ID and Degree to reach 100%.',
+          progress: 0.85,
         ),
         const SizedBox(height: 14),
         FutureBuilder<List<Map<String, dynamic>>>(
@@ -539,50 +568,9 @@ class _ProfileTab extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const Card(
-            child: Padding(
-              padding: EdgeInsets.all(18),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 31,
-                        backgroundColor: AppColors.blueMist,
-                        child: Icon(
-                          Icons.verified_user_rounded,
-                          color: AppColors.professionalBlue,
-                        ),
-                      ),
-                      SizedBox(width: 14),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Rosa Demaye',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                fontSize: 18,
-                              ),
-                            ),
-                            Text('Verified graduate - Open to work'),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 18),
-                  _ProgressCard(
-                    title: 'Profile strength',
-                    subtitle: 'Add video intro, portfolio, and language level.',
-                    progress: 0.74,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const _ProfileHeaderCard(),
+          const SizedBox(height: 24),
+          const _VerificationBadgeSection(),
           const SizedBox(height: 24),
           _ProfileSection(
             title: 'Contact Information',
@@ -623,36 +611,47 @@ class _ProfileTab extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           _ProfileSection(
-            title: 'Projects Showcase',
-            child: Column(
+            title: 'Languages',
+            child: Row(
               children: const [
-                _ProjectItem(
-                  title: 'Kidme Mobile App',
-                  description: 'A recruitment platform for the Chadian market.',
+                _TechChip(
+                  label: 'French (Native)',
+                  color: AppColors.primaryNavy,
                 ),
-                _ProjectItem(
-                  title: 'Local NGO Tracker',
-                  description: 'Real-time tracking of humanitarian aid.',
+                SizedBox(width: 8),
+                _TechChip(
+                  label: 'Arabic (Bilingual)',
+                  color: AppColors.primaryNavy,
                 ),
+                SizedBox(width: 8),
+                _TechChip(label: 'English (B2)', color: AppColors.primaryNavy),
               ],
             ),
           ),
           const SizedBox(height: 24),
           const Text(
-            'Platform Features',
+            'Achievements & Growth',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
           const SizedBox(height: 12),
-          const _ProfileFeature(
-            icon: Icons.verified_outlined,
-            title: 'Professional verification',
-            subtitle: 'ID, diploma, phone, email, and certificate checks.',
-            status: '3/5 verified',
+          const _BadgeGrid(),
+          const SizedBox(height: 24),
+          const Text(
+            'Expert Ecosystem Tools',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          const SizedBox(height: 12),
+          _ProfileFeature(
+            icon: Icons.video_camera_front_outlined,
+            title: 'Video Introduction',
+            subtitle: 'Pitch yourself in French or Arabic.',
+            status: 'Add video',
+            onTap: () {},
           ),
           _ProfileFeature(
             icon: Icons.description_outlined,
-            title: 'AI CV builder',
-            subtitle: 'Export an ATS-friendly PDF from profile data.',
+            title: 'AI CV Builder',
+            subtitle: 'Export an ATS-friendly PDF.',
             status: 'Draft ready',
             onTap: () {
               Navigator.of(context).push(
@@ -660,17 +659,10 @@ class _ProfileTab extends StatelessWidget {
               );
             },
           ),
-          const _ProfileFeature(
-            icon: Icons.video_camera_front_outlined,
-            title: 'Video introduction',
-            subtitle: 'Record a short pitch in French, English, or Arabic.',
-            status: 'Add video',
-          ),
           _ProfileFeature(
             icon: Icons.workspaces_outline,
             title: 'Portfolio and projects',
-            subtitle:
-                'GitHub links, certificates, project images, and research.',
+            subtitle: 'GitHub links, project images, and research.',
             status: '2 projects',
             onTap: () {
               Navigator.of(context).push(
@@ -681,7 +673,7 @@ class _ProfileTab extends StatelessWidget {
           _ProfileFeature(
             icon: Icons.psychology_alt_outlined,
             title: 'Skill gap analyzer',
-            subtitle: 'See missing skills before applying to a role.',
+            subtitle: 'See missing skills for your dream role.',
             status: '70% ready',
             onTap: () {
               Navigator.of(context).push(
@@ -691,31 +683,201 @@ class _ProfileTab extends StatelessWidget {
               );
             },
           ),
-          const _ProfileFeature(
-            icon: Icons.timeline_rounded,
-            title: 'Application tracking',
-            subtitle: 'Applied, viewed, shortlisted, interview, accepted.',
-            status: '6 active',
-          ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
             onPressed: () {
-              // Internal navigation to Schedule index
               (context.findAncestorStateOfType<_JobFeedScreenState>())
                   ?.setState(() {
                     (context.findAncestorStateOfType<_JobFeedScreenState>())
                             ?._tabIndex =
-                        4;
+                        5;
                   });
             },
             icon: const Icon(Icons.calendar_month_rounded),
-            label: const Text('View My Schedule'),
+            label: const Text('Open My Calendar'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryNavy,
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ProfileHeaderCard extends StatelessWidget {
+  const _ProfileHeaderCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 36,
+                  backgroundColor: AppColors.blueMist,
+                  child: Icon(
+                    Icons.person_rounded,
+                    size: 40,
+                    color: AppColors.professionalBlue,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Rosa Demaye',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 20,
+                        ),
+                      ),
+                      const Text('Verified graduate - Open to work'),
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.verified_rounded,
+                            size: 14,
+                            color: AppColors.professionalBlue,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'Kidme Pro Verified',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.professionalBlue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            const _ProgressCard(
+              title: 'Profile Power',
+              subtitle: 'Top 10% of applicants in Chad',
+              progress: 0.85,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _VerificationBadgeSection extends StatelessWidget {
+  const _VerificationBadgeSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Trust & Verification',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            _VerificationBadge(label: 'ID Card', isVerified: true),
+            _VerificationBadge(label: 'Degree', isVerified: true),
+            _VerificationBadge(label: 'Phone', isVerified: false),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _VerificationBadge extends StatelessWidget {
+  final String label;
+  final bool isVerified;
+  const _VerificationBadge({required this.label, required this.isVerified});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isVerified ? AppColors.softMint : AppColors.softWhite,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isVerified ? AppColors.emerald : AppColors.cardBorder,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isVerified ? Icons.check_circle_rounded : Icons.pending_rounded,
+            size: 16,
+            color: isVerified ? AppColors.emerald : AppColors.softGrey,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: isVerified ? AppColors.emerald : AppColors.softGrey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BadgeGrid extends StatelessWidget {
+  const _BadgeGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: const [
+        _AchievementBadge(icon: Icons.verified_user_rounded, label: 'Verified'),
+        _AchievementBadge(icon: Icons.speed_rounded, label: 'Fast'),
+        _AchievementBadge(icon: Icons.emoji_events_rounded, label: 'Top 1%'),
+      ],
+    );
+  }
+}
+
+class _AchievementBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _AchievementBadge({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: const BoxDecoration(
+            color: AppColors.warmMist,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: AppColors.goldAccent),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 }
@@ -815,31 +977,6 @@ class _ExperienceItem extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProjectItem extends StatelessWidget {
-  final String title;
-  final String description;
-
-  const _ProjectItem({required this.title, required this.description});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text(
-            description,
-            style: const TextStyle(color: AppColors.softGrey, fontSize: 13),
           ),
         ],
       ),
@@ -1132,6 +1269,33 @@ class _CandidateRow extends StatelessWidget {
         style: const TextStyle(
           color: AppColors.emerald,
           fontWeight: FontWeight.w900,
+        ),
+      ),
+    );
+  }
+}
+
+class _TechChip extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _TechChip({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: color,
         ),
       ),
     );

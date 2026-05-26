@@ -5,11 +5,9 @@ import '../../features/jobs/models/job_model.dart';
 class SupabaseService {
   final _client = Supabase.instance.client;
 
-  /// Fetches the list of jobs.
+  /// Fetches the list of jobs with added local categories and verification.
   Future<List<Job>> getJobs() async {
     try {
-      // For now, returning mock data to maintain UI consistency
-      // while the backend schema is being finalized by your colleague.
       await Future.delayed(const Duration(milliseconds: 600));
       return const [
         Job(
@@ -32,12 +30,21 @@ class SupabaseService {
         ),
         Job(
           id: '3',
-          company: 'Design Lab',
-          role: 'Junior UI/UX Designer',
-          location: 'Remote',
-          salary: '250k-420k XAF',
-          match: 88,
-          status: 'Interview',
+          company: 'Esso Chad',
+          role: 'Field Engineer',
+          location: 'Doba',
+          salary: '800k-1.2M XAF',
+          match: 75,
+          status: 'Oil & Mining',
+        ),
+        Job(
+          id: '4',
+          company: 'Moov Africa',
+          role: 'Network Administrator',
+          location: "N'Djamena",
+          salary: 'Negotiable',
+          match: 82,
+          status: 'Telecom',
         ),
       ];
     } catch (e) {
@@ -47,12 +54,44 @@ class SupabaseService {
 
   /// Fetches application tracking data.
   Future<List<Map<String, dynamic>>> getApplicationTracker() async {
-    // This will eventually fetch from the 'applications' table.
     await Future.delayed(const Duration(milliseconds: 500));
     return [
-      {'title': 'Profile reviewed', 'active': true},
-      {'title': 'Recruiter shortlisted you', 'active': true},
-      {'title': 'Interview invitation', 'active': false},
+      {'title': 'Applied', 'active': true},
+      {'title': 'Viewed by Recruiter', 'active': true},
+      {'title': 'Shortlisted', 'active': true},
+      {'title': 'Interview Scheduled', 'active': false},
+      {'title': 'Accepted', 'active': false},
+    ];
+  }
+
+  /// Fetches career learning content.
+  Future<List<Map<String, String>>> getLearningHubContent() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return [
+      {
+        'title': 'How to ace an ONAPE interview',
+        'category': 'Interview Tips',
+        'url': 'https://kidme.td/tips/interview',
+      },
+      {
+        'title': 'Top skills for oil & gas in Chad',
+        'category': 'Career Roadmap',
+        'url': 'https://kidme.td/tips/oil-mining',
+      },
+      {
+        'title': 'Writing an ATS-friendly CV for NGOs',
+        'category': 'CV Tips',
+        'url': 'https://kidme.td/tips/cv-ngo',
+      },
+    ];
+  }
+
+  /// Fetches achievement badges for the user.
+  Future<List<Map<String, dynamic>>> getUserBadges() async {
+    return [
+      {'label': 'Verified Graduate', 'icon': 'verified'},
+      {'label': 'Fast Responder', 'icon': 'speed'},
+      {'label': 'Interview Expert', 'icon': 'school'},
     ];
   }
 }

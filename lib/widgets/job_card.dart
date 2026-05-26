@@ -12,6 +12,7 @@ class JobCard extends StatelessWidget {
     required this.match,
     required this.status,
     required this.onTap,
+    this.isVerifiedRecruiter = true,
   });
 
   final String company;
@@ -21,6 +22,7 @@ class JobCard extends StatelessWidget {
   final int match;
   final String status;
   final VoidCallback onTap;
+  final bool isVerifiedRecruiter;
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +48,21 @@ class JobCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          role,
-                          style: Theme.of(context).textTheme.titleMedium,
+                        Row(
+                          children: [
+                            Text(
+                              role,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            if (isVerifiedRecruiter) ...[
+                              const SizedBox(width: 6),
+                              const Icon(
+                                Icons.verified_rounded,
+                                size: 16,
+                                color: AppColors.professionalBlue,
+                              ),
+                            ],
+                          ],
                         ),
                         Text('$company - $location'),
                       ],
@@ -101,6 +115,8 @@ class JobCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
+                  _WhatsAppButton(onTap: () {}),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -121,6 +137,31 @@ class JobCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WhatsAppButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _WhatsAppButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF25D366).withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Icon(
+          Icons.chat_rounded,
+          color: Color(0xFF25D366),
+          size: 20,
         ),
       ),
     );
