@@ -7,6 +7,8 @@ import '../features/events/screens/calendar_screen.dart';
 import '../features/events/screens/events_for_you_screen.dart';
 import '../features/jobs/models/job_model.dart';
 import '../features/notifications/screens/notifications_screen.dart';
+import '../features/portfolio/screens/portfolio_screen.dart';
+import '../features/skills/screens/skill_gap_analyzer_screen.dart';
 import '../theme/app_colors.dart';
 import '../widgets/job_card.dart';
 import '../widgets/kidme_logo.dart';
@@ -664,18 +666,30 @@ class _ProfileTab extends StatelessWidget {
             subtitle: 'Record a short pitch in French, English, or Arabic.',
             status: 'Add video',
           ),
-          const _ProfileFeature(
+          _ProfileFeature(
             icon: Icons.workspaces_outline,
             title: 'Portfolio and projects',
             subtitle:
                 'GitHub links, certificates, project images, and research.',
             status: '2 projects',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const PortfolioScreen()),
+              );
+            },
           ),
-          const _ProfileFeature(
+          _ProfileFeature(
             icon: Icons.psychology_alt_outlined,
             title: 'Skill gap analyzer',
             subtitle: 'See missing skills before applying to a role.',
             status: '70% ready',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const SkillGapAnalyzerScreen(),
+                ),
+              );
+            },
           ),
           const _ProfileFeature(
             icon: Icons.timeline_rounded,
