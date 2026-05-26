@@ -14,9 +14,13 @@ class SplashScreen extends StatelessWidget {
       body: DecoratedBox(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.white, AppColors.softMint, AppColors.mist],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.blackAccent,
+              AppColors.midnightNavy,
+              AppColors.elegantNavy,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -25,12 +29,13 @@ class SplashScreen extends StatelessWidget {
             child: Column(
               children: [
                 const Spacer(),
-                const KidmeLogo(iconSize: 118, textSize: 62),
+                const KidmeLogo(iconSize: 92, textSize: 46, light: true),
                 const SizedBox(height: 46),
                 Text(
                   'The Smartest Way to Connect Seekers to Recruiters.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    color: Colors.white,
                     fontSize: 28,
                     height: 1.12,
                   ),
@@ -39,12 +44,14 @@ class SplashScreen extends StatelessWidget {
                 const Text(
                   'Build credibility, apply faster, and discover trusted opportunities in Chad.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: AppColors.softGrey, height: 1.45),
+                  style: TextStyle(color: Color(0xDDFFFFFF), height: 1.45),
                 ),
                 const Spacer(),
                 KidmeButton(
                   label: 'Get Started',
                   icon: Icons.arrow_forward_rounded,
+                  backgroundColor: AppColors.goldAccent,
+                  foregroundColor: AppColors.blackAccent,
                   onPressed: () => Navigator.of(context).pushReplacement(
                     MaterialPageRoute<void>(
                       builder: (_) => const OnboardingScreen(),

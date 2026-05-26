@@ -152,7 +152,7 @@ class _SkillProgressTile extends StatelessWidget {
               backgroundColor: AppColors.cardBorder,
               valueColor: AlwaysStoppedAnimation(
                 skill.isMissing
-                    ? Colors.deepOrange.withOpacity(0.5)
+                    ? Colors.deepOrange.withValues(alpha: 0.5)
                     : AppColors.emerald,
               ),
             ),

@@ -50,9 +50,13 @@ class JobCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              role,
-                              style: Theme.of(context).textTheme.titleMedium,
+                            Expanded(
+                              child: Text(
+                                role,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
                             ),
                             if (isVerifiedRecruiter) ...[
                               const SizedBox(width: 6),
@@ -64,7 +68,11 @@ class JobCard extends StatelessWidget {
                             ],
                           ],
                         ),
-                        Text('$company - $location'),
+                        Text(
+                          '$company - $location',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
                   ),
@@ -155,7 +163,7 @@ class _WhatsAppButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xFF25D366).withOpacity(0.1),
+          color: const Color(0xFF25D366).withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(

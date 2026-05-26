@@ -106,7 +106,7 @@ class _HubHero extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Get tips on interviews, CV building, and local market demand in Chad.',
-            style: TextStyle(color: Colors.white.withOpacity(0.8)),
+            style: TextStyle(color: Colors.white.withValues(alpha: 0.8)),
           ),
         ],
       ),

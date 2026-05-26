@@ -10,7 +10,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  List<KidmeNotification> _notifications = [
+  final List<KidmeNotification> _notifications = [
     KidmeNotification(
       id: '1',
       title: 'New Job Match!',
@@ -103,7 +103,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       _showOnlyApplicationUpdates = value;
                     });
                   },
-                  activeColor: AppColors.emerald,
+                  activeThumbColor: AppColors.emerald,
                 ),
               ],
             ),
@@ -161,7 +161,7 @@ class _NotificationTile extends StatelessWidget {
     return Container(
       color: notification.isRead
           ? Colors.transparent
-          : AppColors.blueMist.withOpacity(0.3),
+          : AppColors.blueMist.withValues(alpha: 0.3),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: AppColors.blueMist,

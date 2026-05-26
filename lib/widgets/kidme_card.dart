@@ -25,7 +25,7 @@ class KidmeCard extends StatelessWidget {
         border: Border.all(color: AppColors.cardBorder),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryNavy.withAlpha(14),
+            color: AppColors.primaryNavy.withAlpha(18),
             blurRadius: 24,
             offset: const Offset(0, 14),
           ),

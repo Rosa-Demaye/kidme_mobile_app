@@ -38,7 +38,8 @@ class ConversationListScreen extends StatelessWidget {
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: conversations.length,
-        separatorBuilder: (_, __) => const Divider(indent: 80, height: 1),
+        separatorBuilder: (context, index) =>
+            const Divider(indent: 80, height: 1),
         itemBuilder: (context, index) {
           final conv = conversations[index];
           return ListTile(

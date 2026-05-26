@@ -18,6 +18,7 @@ class LoginScreen extends StatelessWidget {
     final isRecruiter = role == 'Recruiter';
 
     return Scaffold(
+      backgroundColor: AppColors.mist,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
@@ -43,7 +44,7 @@ class LoginScreen extends StatelessWidget {
                   Text(
                     recruiterType ?? role,
                     style: const TextStyle(
-                      color: AppColors.emerald,
+                      color: AppColors.goldAccent,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -69,20 +70,38 @@ class LoginScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       const Text('Remember me'),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text('Forgot password?'),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: const Text('Forgot password?'),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 18),
-                  KidmeButton(
-                    label: 'Login',
-                    icon: Icons.login_rounded,
-                    onPressed: () => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const JobFeedScreen(),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.goldAccent.withAlpha(55),
+                          blurRadius: 18,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: KidmeButton(
+                      label: 'Login',
+                      icon: Icons.login_rounded,
+                      backgroundColor: AppColors.primaryNavy,
+                      onPressed: () => Navigator.of(context).pushReplacement(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const JobFeedScreen(),
+                        ),
                       ),
                     ),
                   ),
@@ -92,8 +111,9 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 22),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 const Text("Don't have an account?"),
                 TextButton(
@@ -177,28 +197,36 @@ class _AuthHero extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(32),
         gradient: const LinearGradient(
-          colors: [AppColors.softMint, Colors.white],
+          colors: [AppColors.midnightNavy, AppColors.elegantNavy],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         border: Border.all(color: Colors.white),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.midnightNavy.withAlpha(48),
+            blurRadius: 28,
+            offset: const Offset(0, 16),
+          ),
+        ],
       ),
       child: Column(
         children: [
-          const KidmeLogo(iconSize: 78, textSize: 34),
+          const KidmeLogo(iconSize: 78, textSize: 34, light: true),
           const SizedBox(height: 20),
           Text(
             title,
             textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.displaySmall?.copyWith(fontSize: 34),
+            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+              fontSize: 34,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             subtitle,
             textAlign: TextAlign.center,
-            style: const TextStyle(color: AppColors.softGrey, height: 1.4),
+            style: const TextStyle(color: Color(0xE6FFFFFF), height: 1.4),
           ),
         ],
       ),
@@ -274,7 +302,7 @@ class _SocialCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 24,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.softWhite,
       child: Text(
         label,
         style: const TextStyle(

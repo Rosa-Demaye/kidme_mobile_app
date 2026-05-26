@@ -245,7 +245,7 @@ class _RoleCard extends StatelessWidget {
                 ),
               ],
             ),
-            if (child != null) child!,
+            ?child,
           ],
         ),
       ),

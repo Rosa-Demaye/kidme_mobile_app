@@ -82,7 +82,7 @@ class _EventCard extends StatelessWidget {
             child: Icon(
               Icons.event_note_rounded,
               size: 48,
-              color: imageColor.withOpacity(0.5),
+              color: imageColor.withValues(alpha: 0.5),
             ),
           ),
           Padding(

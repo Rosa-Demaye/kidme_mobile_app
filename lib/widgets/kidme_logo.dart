@@ -25,7 +25,7 @@ class KidmeLogo extends StatelessWidget {
         if (showWordmark) ...[
           SizedBox(width: iconSize * 0.28),
           Text(
-            'kidme',
+            'kidm\u00e9',
             style: TextStyle(
               color: light ? Colors.white : AppColors.primaryNavy,
               fontSize: textSize,
@@ -67,7 +67,7 @@ class _KidmeMark extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppColors.primaryNavy, AppColors.emerald],
+                colors: [AppColors.midnightNavy, AppColors.deepBlue],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -78,11 +78,20 @@ class _KidmeMark extends StatelessWidget {
                 'k',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: size * 0.55,
+                  fontSize: size * 0.50,
                   fontWeight: FontWeight.w900,
                   height: 0.95,
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            right: size * 0.08,
+            top: size * 0.10,
+            child: Icon(
+              Icons.search_rounded,
+              color: AppColors.goldAccent,
+              size: size * 0.42,
             ),
           ),
           Positioned(
@@ -92,7 +101,7 @@ class _KidmeMark extends StatelessWidget {
               height: size * 0.26,
               width: size * 0.26,
               decoration: BoxDecoration(
-                color: AppColors.softMint,
+                color: AppColors.goldAccent,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: size * 0.05),
               ),

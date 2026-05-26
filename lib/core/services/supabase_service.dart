@@ -3,7 +3,7 @@ import '../../features/jobs/models/job_model.dart';
 
 /// Centralized service for Supabase interactions.
 class SupabaseService {
-  final _client = Supabase.instance.client;
+  SupabaseClient get client => Supabase.instance.client;
 
   /// Fetches the list of jobs with added local categories and verification.
   Future<List<Job>> getJobs() async {

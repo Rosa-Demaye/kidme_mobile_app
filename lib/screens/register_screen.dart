@@ -22,6 +22,7 @@ class RegisterScreen extends StatelessWidget {
     final isRecruiter = role == 'Recruiter';
 
     return Scaffold(
+      backgroundColor: AppColors.mist,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
@@ -67,7 +68,7 @@ class RegisterScreen extends StatelessWidget {
                       const Spacer(),
                       Chip(
                         label: Text(recruiterType ?? role),
-                        backgroundColor: AppColors.softMint,
+                        backgroundColor: AppColors.blueMist,
                         side: BorderSide.none,
                       ),
                     ],
@@ -120,6 +121,7 @@ class RegisterScreen extends StatelessWidget {
                   KidmeButton(
                     label: 'Create Account',
                     icon: Icons.verified_user_outlined,
+                    backgroundColor: AppColors.primaryNavy,
                     onPressed: () => Navigator.of(context).pushReplacement(
                       MaterialPageRoute<void>(
                         builder: (_) => const JobFeedScreen(),
@@ -134,8 +136,9 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 18),
             if (!isRecruiter) const _CandidateTrustCard(),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 const Text('Already have an account?'),
                 TextButton(
@@ -212,7 +215,7 @@ class _CandidateTrustCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KidmeCard(
-      color: const Color(0xFFFBFFFD),
+      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -261,7 +264,7 @@ class _TrustItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.emerald),
+          Icon(icon, color: AppColors.goldAccent),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -323,7 +326,7 @@ class _SocialCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 24,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.softWhite,
       child: Text(
         label,
         style: const TextStyle(

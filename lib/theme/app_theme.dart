@@ -8,7 +8,7 @@ class AppTheme {
 
   static ThemeData get light {
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppColors.deepGreen,
+      seedColor: AppColors.midnightNavy,
       primary: AppColors.primaryNavy,
       secondary: AppColors.professionalBlue,
       tertiary: AppColors.goldAccent,
@@ -69,7 +69,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.professionalBlue,
+          backgroundColor: AppColors.primaryNavy,
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(
@@ -77,6 +77,27 @@ class AppTheme {
           ),
           textStyle: const TextStyle(fontWeight: FontWeight.w800),
         ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primaryNavy,
+          textStyle: const TextStyle(fontWeight: FontWeight.w800),
+        ),
+      ),
+      navigationBarTheme: const NavigationBarThemeData(
+        backgroundColor: Colors.white,
+        indicatorColor: AppColors.blueMist,
+        labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
+        ),
+      ),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.blueMist,
+        selectedColor: AppColors.primaryNavy,
+        labelStyle: const TextStyle(color: AppColors.primaryNavy),
+        secondaryLabelStyle: const TextStyle(color: Colors.white),
+        side: const BorderSide(color: AppColors.cardBorder),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

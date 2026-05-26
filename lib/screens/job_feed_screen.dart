@@ -43,13 +43,13 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
             const EventsForYouScreen(),
             const LearningHubScreen(),
             const ConversationListScreen(),
-            const _ProfileTab(),
+            _ProfileTab(onOpenCalendar: () => setState(() => _tabIndex = 5)),
             const CalendarScreen(),
           ],
         ),
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex >= 4 ? 1 : _tabIndex,
+        selectedIndex: _tabIndex > 4 ? 4 : _tabIndex,
         onDestinationSelected: (index) {
           setState(() {
             _tabIndex = index;
@@ -545,7 +545,9 @@ class _RecruiterPreviewTab extends StatelessWidget {
 }
 
 class _ProfileTab extends StatelessWidget {
-  const _ProfileTab();
+  const _ProfileTab({required this.onOpenCalendar});
+
+  final VoidCallback onOpenCalendar;
 
   @override
   Widget build(BuildContext context) {
@@ -685,19 +687,27 @@ class _ProfileTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: () {
-              (context.findAncestorStateOfType<_JobFeedScreenState>())
-                  ?.setState(() {
-                    (context.findAncestorStateOfType<_JobFeedScreenState>())
-                            ?._tabIndex =
-                        5;
-                  });
-            },
+            onPressed: onOpenCalendar,
             icon: const Icon(Icons.calendar_month_rounded),
             label: const Text('Open My Calendar'),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primaryNavy,
             ),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => Scaffold(
+                    appBar: AppBar(title: const Text('Recruiter preview')),
+                    body: const _RecruiterPreviewTab(),
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.business_center_outlined),
+            label: const Text('Open Recruiter Preview'),
           ),
         ],
       ),
@@ -795,6 +805,43 @@ class _VerificationBadgeSection extends StatelessWidget {
             _VerificationBadge(label: 'Degree', isVerified: true),
             _VerificationBadge(label: 'Phone', isVerified: false),
           ],
+        ),
+        const SizedBox(height: 14),
+        const _ProfileFeature(
+          icon: Icons.verified_outlined,
+          title: 'Professional verification',
+          subtitle: 'ID, diploma, phone, email, and certificate checks.',
+          status: '3/5 verified',
+        ),
+        const _ProfileFeature(
+          icon: Icons.description_outlined,
+          title: 'AI CV builder',
+          subtitle: 'Export an ATS-friendly PDF from profile data.',
+          status: 'Draft ready',
+        ),
+        const _ProfileFeature(
+          icon: Icons.video_camera_front_outlined,
+          title: 'Video introduction',
+          subtitle: 'Record a short pitch in French, English, or Arabic.',
+          status: 'Add video',
+        ),
+        const _ProfileFeature(
+          icon: Icons.workspaces_outline,
+          title: 'Portfolio and projects',
+          subtitle: 'GitHub links, certificates, project images, and research.',
+          status: '2 projects',
+        ),
+        const _ProfileFeature(
+          icon: Icons.psychology_alt_outlined,
+          title: 'Skill gap analyzer',
+          subtitle: 'See missing skills before applying to a role.',
+          status: '70% ready',
+        ),
+        const _ProfileFeature(
+          icon: Icons.timeline_rounded,
+          title: 'Application tracking',
+          subtitle: 'Applied, viewed, shortlisted, interview, accepted.',
+          status: '6 active',
         ),
       ],
     );
@@ -1005,7 +1052,7 @@ class _ProfileFeature extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
-          backgroundColor: AppColors.softMint,
+          backgroundColor: AppColors.blueMist,
           child: Icon(icon, color: AppColors.primaryNavy),
         ),
         title: Text(title),
@@ -1016,7 +1063,7 @@ class _ProfileFeature extends StatelessWidget {
             Text(
               status,
               style: const TextStyle(
-                color: AppColors.emerald,
+                color: AppColors.goldAccent,
                 fontWeight: FontWeight.w900,
               ),
             ),
@@ -1286,9 +1333,9 @@ class _TechChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
         label,

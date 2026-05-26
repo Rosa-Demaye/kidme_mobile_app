@@ -67,7 +67,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen> {
                     'We will use your profile data, experiences, and verified skills to create an ATS-friendly CV.',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 14,
                     ),
                   ),
