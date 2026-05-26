@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/services/supabase_service.dart';
+import '../features/chat/screens/conversation_list_screen.dart';
+import '../features/cv_builder/screens/cv_builder_screen.dart';
 import '../features/events/screens/calendar_screen.dart';
 import '../features/events/screens/events_for_you_screen.dart';
 import '../features/jobs/models/job_model.dart';
@@ -36,17 +38,16 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
           children: [
             _HomeTab(jobsFuture: _jobsFuture),
             const EventsForYouScreen(),
-            const CalendarScreen(),
-            const _ApplicationsTab(),
-            const _RecruiterPreviewTab(),
+            const ConversationListScreen(),
             const _ProfileTab(),
+            const CalendarScreen(), // Index 4, hidden from main nav but accessible
           ],
         ),
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _tabIndex > 3
-            ? 3
-            : _tabIndex, // Map more tabs to limited slots or expand
+        selectedIndex: _tabIndex == 4
+            ? 1
+            : _tabIndex, // Map Calendar to Events slot highlight
         onDestinationSelected: (index) {
           setState(() {
             _tabIndex = index;
@@ -66,9 +67,9 @@ class _JobFeedScreenState extends State<JobFeedScreen> {
             label: 'Events',
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Schedule',
+            icon: Icon(Icons.chat_bubble_outline_rounded),
+            selectedIcon: Icon(Icons.chat_bubble_rounded),
+            label: 'Messages',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline_rounded),
@@ -646,11 +647,16 @@ class _ProfileTab extends StatelessWidget {
             subtitle: 'ID, diploma, phone, email, and certificate checks.',
             status: '3/5 verified',
           ),
-          const _ProfileFeature(
+          _ProfileFeature(
             icon: Icons.description_outlined,
             title: 'AI CV builder',
             subtitle: 'Export an ATS-friendly PDF from profile data.',
             status: 'Draft ready',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CVBuilderScreen()),
+              );
+            },
           ),
           const _ProfileFeature(
             icon: Icons.video_camera_front_outlined,
@@ -676,6 +682,23 @@ class _ProfileTab extends StatelessWidget {
             title: 'Application tracking',
             subtitle: 'Applied, viewed, shortlisted, interview, accepted.',
             status: '6 active',
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Internal navigation to Schedule index
+              (context.findAncestorStateOfType<_JobFeedScreenState>())
+                  ?.setState(() {
+                    (context.findAncestorStateOfType<_JobFeedScreenState>())
+                            ?._tabIndex =
+                        4;
+                  });
+            },
+            icon: const Icon(Icons.calendar_month_rounded),
+            label: const Text('View My Schedule'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryNavy,
+            ),
           ),
         ],
       ),
@@ -816,29 +839,39 @@ class _ProfileFeature extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.status,
+    this.onTap,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final String status;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: onTap,
         leading: CircleAvatar(
           backgroundColor: AppColors.softMint,
           child: Icon(icon, color: AppColors.primaryNavy),
         ),
         title: Text(title),
         subtitle: Text(subtitle),
-        trailing: Text(
-          status,
-          style: const TextStyle(
-            color: AppColors.emerald,
-            fontWeight: FontWeight.w900,
-          ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              status,
+              style: const TextStyle(
+                color: AppColors.emerald,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            if (onTap != null)
+              const Icon(Icons.chevron_right_rounded, size: 18),
+          ],
         ),
       ),
     );
@@ -903,9 +936,9 @@ class _InfoPill extends StatelessWidget {
 }
 
 class _Requirement extends StatelessWidget {
-  const _Requirement({required this.text});
-
   final String text;
+
+  const _Requirement({required this.text});
 
   @override
   Widget build(BuildContext context) {

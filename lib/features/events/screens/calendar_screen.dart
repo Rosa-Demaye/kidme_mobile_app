@@ -93,17 +93,57 @@ class _CalendarHeader extends StatelessWidget {
             // Mock day labels
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-                  .map(
-                    (d) => Text(
-                      d,
-                      style: TextStyle(
-                        color: AppColors.softGrey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                  .toList(),
+              children: [
+                Text(
+                  'M',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'T',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'W',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'T',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'F',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'S',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'S',
+                  style: TextStyle(
+                    color: AppColors.softGrey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 16),
             // Mock grid of days
