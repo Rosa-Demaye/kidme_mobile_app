@@ -124,7 +124,7 @@ class JobCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   _WhatsAppButton(onTap: () {}),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 16),
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -132,7 +132,7 @@ class JobCard extends StatelessWidget {
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
-                        vertical: 8,
+                        vertical: 16,
                       ),
                       minimumSize: Size.zero,
                       shape: RoundedRectangleBorder(
