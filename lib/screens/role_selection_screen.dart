@@ -7,7 +7,7 @@ import 'login_screen.dart';
 
 enum KidmeRole { recruiter, jobSeeker }
 
-enum RecruiterType { gigs, enterprise }
+enum RecruiterType { privateEmployer, company }
 
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
@@ -18,12 +18,12 @@ class RoleSelectionScreen extends StatefulWidget {
 
 class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   KidmeRole _role = KidmeRole.recruiter;
-  RecruiterType _recruiterType = RecruiterType.gigs;
+  RecruiterType _recruiterType = RecruiterType.privateEmployer;
 
   String get _recruiterTypeLabel {
-    return _recruiterType == RecruiterType.gigs
-        ? 'Small Gigs & Individuals'
-        : 'Enterprise & Corporate';
+    return _recruiterType == RecruiterType.privateEmployer
+        ? 'Private Employer'
+        : 'Company';
   }
 
   void _continue() {
@@ -94,27 +94,29 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                                 const SizedBox(height: 14),
                                 _RecruiterBranch(
                                   selected:
-                                      _recruiterType == RecruiterType.gigs,
-                                  title: 'Small Gigs & Individuals',
+                                      _recruiterType ==
+                                      RecruiterType.privateEmployer,
+                                  title: 'Private Employer',
                                   subtitle:
-                                      'Hire informal help, quick tasks, one-off projects.',
+                                      'Shop owners, small businesses, households, and freelance recruiters.',
                                   icon: Icons.storefront_outlined,
                                   onTap: () => setState(
-                                    () => _recruiterType = RecruiterType.gigs,
+                                    () => _recruiterType =
+                                        RecruiterType.privateEmployer,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
                                 _RecruiterBranch(
                                   selected:
                                       _recruiterType ==
-                                      RecruiterType.enterprise,
-                                  title: 'Enterprise & Corporate',
+                                      RecruiterType.company,
+                                  title: 'Company',
                                   subtitle:
-                                      'Post vacancies for formal roles and permanent staff.',
+                                      'Verified HR account with analytics, recruiters, and company page.',
                                   icon: Icons.apartment_rounded,
                                   onTap: () => setState(
                                     () => _recruiterType =
-                                        RecruiterType.enterprise,
+                                        RecruiterType.company,
                                   ),
                                 ),
                               ],
@@ -189,7 +191,7 @@ class _RoleCard extends StatelessWidget {
         duration: const Duration(milliseconds: 220),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: selected ? AppColors.softMint : Colors.white,
+          color: selected ? AppColors.primaryNavy.withAlpha(10) : Colors.white,
           borderRadius: BorderRadius.circular(22),
           border: Border.all(
             color: selected ? AppColors.primaryNavy : AppColors.cardBorder,
@@ -198,7 +200,7 @@ class _RoleCard extends StatelessWidget {
           boxShadow: [
             if (selected)
               BoxShadow(
-                color: AppColors.emerald.withAlpha(34),
+                color: AppColors.primaryNavy.withAlpha(20),
                 blurRadius: 24,
                 offset: const Offset(0, 14),
               ),
@@ -212,17 +214,12 @@ class _RoleCard extends StatelessWidget {
                   height: 58,
                   width: 58,
                   decoration: BoxDecoration(
-                    gradient: selected
-                        ? const LinearGradient(
-                            colors: [AppColors.primaryNavy, AppColors.emerald],
-                          )
-                        : null,
-                    color: selected ? null : AppColors.cardBorder,
+                    color: selected ? AppColors.primaryNavy : AppColors.cardBorder.withAlpha(100),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     icon,
-                    color: selected ? Colors.white : AppColors.softGrey,
+                    color: selected ? Colors.white : AppColors.primaryNavy,
                     size: 30,
                   ),
                 ),
@@ -236,6 +233,7 @@ class _RoleCard extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.w900,
                           fontSize: 17,
+                          color: AppColors.primaryNavy,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -245,7 +243,7 @@ class _RoleCard extends StatelessWidget {
                 ),
               ],
             ),
-            ?child,
+            if (child != null) child!,
           ],
         ),
       ),
@@ -276,7 +274,7 @@ class _RecruiterBranch extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: selected ? AppColors.mint.withAlpha(130) : Colors.white,
+          color: selected ? AppColors.primaryNavy.withAlpha(20) : Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected ? AppColors.primaryNavy : AppColors.cardBorder,
@@ -286,9 +284,9 @@ class _RecruiterBranch extends StatelessWidget {
           children: [
             Icon(
               selected
-                  ? Icons.radio_button_checked_rounded
+                  ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
-              color: selected ? AppColors.primaryNavy : AppColors.softGrey,
+              color: selected ? AppColors.primaryNavy : Colors.grey,
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -297,13 +295,16 @@ class _RecruiterBranch extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(fontWeight: FontWeight.w900),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryNavy,
+                    ),
                   ),
                   Text(subtitle, style: const TextStyle(fontSize: 12)),
                 ],
               ),
             ),
-            Icon(icon, color: AppColors.primaryNavy),
+            Icon(icon, color: AppColors.primaryNavy, size: 20),
           ],
         ),
       ),

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../core/services/kidme_backend_scope.dart';
 import '../theme/app_colors.dart';
-import '../widgets/kidme_button.dart';
-import '../widgets/kidme_card.dart';
-import '../widgets/kidme_logo.dart';
 import 'job_feed_screen.dart';
 import 'login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({
     super.key,
     this.role = 'Job Seeker',
@@ -18,322 +17,342 @@ class RegisterScreen extends StatelessWidget {
   final String? recruiterType;
 
   @override
-  Widget build(BuildContext context) {
-    final isRecruiter = role == 'Recruiter';
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
 
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  bool _isLoading = false;
+  String? _errorMessage;
+  late String _currentRole;
+  bool _rememberMe = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentRole = widget.role;
+  }
+
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final fullName = _fullNameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
+      setState(() => _errorMessage = 'All fields are required.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final service = KidmeBackendScope.of(context);
+    try {
+      await service.signUpWithPassword(
+        email: email,
+        password: password,
+        fullName: fullName,
+        role: _currentRole,
+        recruiterType: widget.recruiterType,
+      );
+
+      if (!mounted) return;
+
+      if (service.isSignedIn) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (_) => const JobFeedScreen()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Account created. Please confirm your email.')),
+        );
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute<void>(builder: (_) => LoginScreen(role: _currentRole)),
+        );
+      }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _errorMessage = _friendlyAuthError(error));
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.mist,
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
           children: [
-            Row(
-              children: [
-                IconButton.filled(
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(Icons.arrow_back_rounded),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.primaryNavy,
-                    foregroundColor: Colors.white,
+            const SizedBox(height: 50),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: CircleAvatar(
+                  backgroundColor: AppColors.cardBorder.withAlpha(100),
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                        size: 18, color: AppColors.primaryNavy),
+                    onPressed: () => Navigator.of(context).maybePop(),
                   ),
                 ),
-                const Spacer(),
-                const _LanguageSelector(),
-              ],
+              ),
             ),
-            const SizedBox(height: 24),
-            Text(
-              'Register',
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.displaySmall?.copyWith(fontSize: 38),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              isRecruiter
-                  ? 'Create your recruiter account'
-                  : 'Create your new candidate account',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, color: AppColors.softGrey),
-            ),
-            const SizedBox(height: 24),
-            KidmeCard(
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const KidmeLogo(iconSize: 42, textSize: 24),
-                      const Spacer(),
-                      Chip(
-                        label: Text(recruiterType ?? role),
-                        backgroundColor: AppColors.blueMist,
-                        side: BorderSide.none,
-                      ),
-                    ],
+                  const SizedBox(height: 20),
+                  Text(
+                    'Register',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColors.primaryNavy,
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
-                  const SizedBox(height: 18),
-                  const _AuthField(
-                    label: 'Full name',
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Create your new account',
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                  ),
+                  const SizedBox(height: 30),
+                  _buildRoleToggle(),
+                  const SizedBox(height: 30),
+                  _buildTextField(
+                    controller: _fullNameController,
+                    hintText: 'Full Name',
                     icon: Icons.person_outline_rounded,
                   ),
-                  const SizedBox(height: 12),
-                  const _AuthField(
-                    label: 'Email address',
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _emailController,
+                    hintText: 'user@gmail.com',
                     icon: Icons.mail_outline_rounded,
+                    suffixIcon: Icons.check,
                   ),
-                  const SizedBox(height: 12),
-                  const _AuthField(
-                    label: 'Password',
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _passwordController,
+                    hintText: '********',
                     icon: Icons.lock_outline_rounded,
-                    obscureText: true,
-                    suffixIcon: Icons.visibility_rounded,
+                    isPassword: true,
                   ),
-                  if (!isRecruiter) ...[
-                    const SizedBox(height: 12),
-                    const _AuthField(
-                      label: 'National Identity Number',
-                      icon: Icons.badge_outlined,
+                  const SizedBox(height: 30),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryNavy,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: Text(
+                        _isLoading ? 'Creating...' : 'Sign Up',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ],
-                  const SizedBox(height: 14),
+                  ),
+                  const SizedBox(height: 15),
                   Row(
                     children: [
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: AppColors.premiumGold,
-                        size: 18,
-                      ),
+                      Icon(Icons.check_circle, color: AppColors.primaryNavy, size: 20),
                       const SizedBox(width: 8),
-                      const Text('Remember me'),
+                      const Text('Remember Me', style: TextStyle(color: Colors.grey)),
                       const Spacer(),
-                      Flexible(
-                        child: Text(
-                          'Secure Supabase-ready flow',
-                          textAlign: TextAlign.right,
-                          style: Theme.of(context).textTheme.bodySmall,
+                      const Text('Forget Password?', style: TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    children: const [
+                      Expanded(child: Divider()),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text('Or continue with', style: TextStyle(color: Colors.grey)),
+                      ),
+                      Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _SocialIcon(icon: Icons.facebook, color: Colors.blue),
+                      const SizedBox(width: 20),
+                      _SocialIcon(image: 'https://pngimg.com/uploads/google/google_PNG19635.png'),
+                      const SizedBox(width: 20),
+                      _SocialIcon(icon: Icons.apple, color: Colors.black),
+                    ],
+                  ),
+                  const SizedBox(height: 40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Already have an account? ', style: TextStyle(color: Colors.grey)),
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).pushReplacement(
+                          MaterialPageRoute<void>(
+                            builder: (_) => LoginScreen(role: _currentRole),
+                          ),
+                        ),
+                        child: const Text(
+                          'Sign in',
+                          style: TextStyle(
+                            color: AppColors.primaryNavy,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 18),
-                  KidmeButton(
-                    label: 'Create Account',
-                    icon: Icons.verified_user_outlined,
-                    backgroundColor: AppColors.primaryNavy,
-                    onPressed: () => Navigator.of(context).pushReplacement(
-                      MaterialPageRoute<void>(
-                        builder: (_) => const JobFeedScreen(),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 22),
-                  const _SocialAuthRow(),
+                  const SizedBox(height: 30),
                 ],
               ),
             ),
-            const SizedBox(height: 18),
-            if (!isRecruiter) const _CandidateTrustCard(),
-            const SizedBox(height: 12),
-            Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                const Text('Already have an account?'),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pushReplacement(
-                    MaterialPageRoute<void>(
-                      builder: (_) =>
-                          LoginScreen(role: role, recruiterType: recruiterType),
-                    ),
-                  ),
-                  child: const Text('Sign in'),
-                ),
-              ],
-            ),
           ],
         ),
       ),
     );
   }
-}
 
-class _LanguageSelector extends StatelessWidget {
-  const _LanguageSelector();
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      itemBuilder: (context) => const [
-        PopupMenuItem(value: 'fr', child: Text('Francais')),
-        PopupMenuItem(value: 'en', child: Text('English')),
-        PopupMenuItem(value: 'ar', child: Text('Arabic')),
-      ],
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.language_rounded, color: AppColors.primaryNavy),
-          SizedBox(width: 6),
-          Text('Languages', style: TextStyle(fontWeight: FontWeight.w800)),
-          Icon(Icons.keyboard_arrow_down_rounded),
-        ],
+  Widget _buildRoleToggle() {
+    return Container(
+      height: 55,
+      decoration: BoxDecoration(
+        color: AppColors.cardBorder.withAlpha(50),
+        borderRadius: BorderRadius.circular(30),
       ),
-    );
-  }
-}
-
-class _AuthField extends StatelessWidget {
-  const _AuthField({
-    required this.label,
-    required this.icon,
-    this.obscureText = false,
-    this.suffixIcon,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool obscureText;
-  final IconData? suffixIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        suffixIcon: suffixIcon == null ? null : Icon(suffixIcon),
-      ),
-    );
-  }
-}
-
-class _CandidateTrustCard extends StatelessWidget {
-  const _CandidateTrustCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return KidmeCard(
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Build a trusted profile',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 12),
-          const _TrustItem(
-            icon: Icons.verified_outlined,
-            title: 'Professional verification badge',
-            subtitle: 'Verify phone, email, ID, diploma, and certificates.',
-          ),
-          const _TrustItem(
-            icon: Icons.description_outlined,
-            title: 'AI CV builder',
-            subtitle: 'Create an ATS-friendly CV from your profile data.',
-          ),
-          const _TrustItem(
-            icon: Icons.video_camera_front_outlined,
-            title: 'Video introduction',
-            subtitle:
-                'Show communication skills in French, English, or Arabic.',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _TrustItem extends StatelessWidget {
-  const _TrustItem({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: AppColors.goldAccent),
-          const SizedBox(width: 10),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.w900),
+            child: GestureDetector(
+              onTap: () => setState(() => _currentRole = 'Job Seeker'),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _currentRole == 'Job Seeker' ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: _currentRole == 'Job Seeker'
+                      ? [BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 10)]
+                      : null,
                 ),
-                Text(subtitle),
-              ],
+                child: Text(
+                  'Job Seeker',
+                  style: TextStyle(
+                    color: _currentRole == 'Job Seeker' ? AppColors.primaryNavy : Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => setState(() => _currentRole = 'Recruiter'),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: _currentRole == 'Recruiter' ? Colors.white : Colors.transparent,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: _currentRole == 'Recruiter'
+                      ? [BoxShadow(color: Colors.black.withAlpha(20), blurRadius: 10)]
+                      : null,
+                ),
+                child: Text(
+                  'Recruiter',
+                  style: TextStyle(
+                    color: _currentRole == 'Recruiter' ? AppColors.primaryNavy : Colors.grey,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
   }
-}
 
-class _SocialAuthRow extends StatelessWidget {
-  const _SocialAuthRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: const [
-            Expanded(child: Divider()),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text('Or continue with'),
-            ),
-            Expanded(child: Divider()),
-          ],
-        ),
-        const SizedBox(height: 18),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            _SocialCircle(label: 'G'),
-            SizedBox(width: 16),
-            _SocialCircle(label: 'A'),
-            SizedBox(width: 16),
-            _SocialCircle(label: 'K'),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _SocialCircle extends StatelessWidget {
-  const _SocialCircle({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 24,
-      backgroundColor: AppColors.softWhite,
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: AppColors.primaryNavy,
-          fontWeight: FontWeight.w900,
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool isPassword = false,
+    IconData? suffixIcon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.cardBorder.withAlpha(100),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword,
+        decoration: InputDecoration(
+          icon: Icon(icon, color: Colors.black54),
+          hintText: hintText,
+          border: InputBorder.none,
+          hintStyle: const TextStyle(color: Colors.black38),
+          suffixIcon: suffixIcon != null
+              ? Icon(suffixIcon, color: AppColors.primaryNavy, size: 18)
+              : (isPassword ? const Icon(Icons.visibility_outlined, color: Colors.black54) : null),
         ),
       ),
     );
   }
+}
+
+class _SocialIcon extends StatelessWidget {
+  const _SocialIcon({this.icon, this.image, this.color});
+  final IconData? icon;
+  final String? image;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: Center(
+        child: image != null
+            ? Image.network(image!, width: 25)
+            : Icon(icon, color: color, size: 30),
+      ),
+    );
+  }
+}
+
+String _friendlyAuthError(Object error) {
+  if (error is AuthException) return error.message;
+  if (error is PostgrestException) return error.message;
+  return 'Something went wrong. Please check your connection and try again.';
 }

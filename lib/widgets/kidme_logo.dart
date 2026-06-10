@@ -67,32 +67,22 @@ class _KidmeMark extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppColors.midnightNavy, AppColors.deepBlue],
+                colors: [
+                  AppColors.midnightNavy,
+                  AppColors.elegantNavy,
+                  AppColors.deepGreen,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(size * 0.22),
             ),
-            child: Center(
-              child: Text(
-                'k',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: size * 0.50,
-                  fontWeight: FontWeight.w900,
-                  height: 0.95,
-                ),
-              ),
-            ),
+            child: CustomPaint(painter: _BriefcaseSearchPainter()),
           ),
           Positioned(
-            right: size * 0.08,
-            top: size * 0.10,
-            child: Icon(
-              Icons.search_rounded,
-              color: AppColors.goldAccent,
-              size: size * 0.42,
-            ),
+            right: size * 0.02,
+            top: size * 0.03,
+            child: Icon(Icons.search_rounded, color: Colors.white, size: size * 0.40),
           ),
           Positioned(
             right: -size * 0.06,
@@ -101,7 +91,7 @@ class _KidmeMark extends StatelessWidget {
               height: size * 0.26,
               width: size * 0.26,
               decoration: BoxDecoration(
-                color: AppColors.goldAccent,
+                color: AppColors.emerald,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: size * 0.05),
               ),
@@ -111,4 +101,49 @@ class _KidmeMark extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BriefcaseSearchPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = size.width * 0.075
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round;
+
+    final body = RRect.fromRectAndRadius(
+      Rect.fromLTWH(
+        size.width * 0.22,
+        size.height * 0.42,
+        size.width * 0.56,
+        size.height * 0.34,
+      ),
+      Radius.circular(size.width * 0.08),
+    );
+    canvas.drawRRect(body, paint);
+
+    canvas.drawArc(
+      Rect.fromLTWH(
+        size.width * 0.38,
+        size.height * 0.28,
+        size.width * 0.24,
+        size.height * 0.24,
+      ),
+      3.14,
+      3.14,
+      false,
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(size.width * 0.24, size.height * 0.56),
+      Offset(size.width * 0.76, size.height * 0.56),
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

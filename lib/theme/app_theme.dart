@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
 
@@ -16,42 +15,39 @@ class AppTheme {
       surface: Colors.white,
     );
 
-    final textTheme = GoogleFonts.interTextTheme();
-
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppColors.mist,
-      textTheme: textTheme.copyWith(
-        displaySmall: GoogleFonts.inter(
+      fontFamily: 'Roboto',
+      textTheme: const TextTheme(
+        displaySmall: TextStyle(
           color: AppColors.primaryNavy,
           fontSize: 34,
-          fontWeight: FontWeight.w900,
+          fontWeight: FontWeight.w800,
           height: 1.05,
-          letterSpacing: -0.5,
         ),
-        headlineSmall: GoogleFonts.inter(
+        headlineSmall: TextStyle(
           color: AppColors.primaryNavy,
           fontSize: 24,
           fontWeight: FontWeight.w800,
-          letterSpacing: -0.3,
         ),
-        titleLarge: GoogleFonts.inter(
+        titleLarge: TextStyle(
           color: AppColors.darkText,
           fontSize: 20,
           fontWeight: FontWeight.w800,
         ),
-        titleMedium: GoogleFonts.inter(
+        titleMedium: TextStyle(
           color: AppColors.darkText,
           fontSize: 16,
           fontWeight: FontWeight.w700,
         ),
-        bodyLarge: GoogleFonts.inter(
+        bodyLarge: TextStyle(
           color: AppColors.darkText,
           fontSize: 15,
           height: 1.45,
         ),
-        bodyMedium: GoogleFonts.inter(
+        bodyMedium: TextStyle(
           color: AppColors.softGrey,
           fontSize: 13,
           height: 1.35,
@@ -65,9 +61,10 @@ class AppTheme {
       ),
       cardTheme: CardThemeData(
         color: Colors.white,
-        elevation: 0,
+        elevation: 0.5,
+        shadowColor: AppColors.primaryNavy.withAlpha(24),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: AppColors.cardBorder),
         ),
       ),
@@ -77,7 +74,7 @@ class AppTheme {
           foregroundColor: Colors.white,
           minimumSize: const Size.fromHeight(54),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
           ),
           textStyle: const TextStyle(fontWeight: FontWeight.w800),
         ),
@@ -88,10 +85,10 @@ class AppTheme {
           textStyle: const TextStyle(fontWeight: FontWeight.w800),
         ),
       ),
-      navigationBarTheme: const NavigationBarThemeData(
+      navigationBarTheme: NavigationBarThemeData(
         backgroundColor: Colors.white,
-        indicatorColor: AppColors.blueMist,
-        labelTextStyle: WidgetStatePropertyAll(
+        indicatorColor: AppColors.primaryNavy.withAlpha(20),
+        labelTextStyle: const WidgetStatePropertyAll(
           TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
         ),
       ),
@@ -109,7 +106,7 @@ class AppTheme {
         hintStyle: const TextStyle(color: AppColors.softGrey),
         prefixIconColor: AppColors.softGrey,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
         ),
       ),
